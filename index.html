@@ -9,197 +9,431 @@
 *{box-sizing:border-box}
 
 body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#eef8ee;
-color:#18351d;
+  margin:0;
+  font-family:Arial,"Noto Sans KR",sans-serif;
+  background:linear-gradient(135deg,#edf9ee,#e4f4ff);
+  color:#18351d;
 }
 
 header{
-background:#2f8f46;
-color:white;
-padding:25px 15px;
-text-align:center;
+  background:linear-gradient(135deg,#238b45,#42b866);
+  color:white;
+  padding:28px 15px;
+  text-align:center;
+  box-shadow:0 4px 15px #0003;
 }
 
-header h1{margin:0 0 8px}
+header h1{
+  margin:0 0 8px;
+  font-size:30px;
+}
+
+header p{
+  margin:0;
+  opacity:.95;
+}
 
 main{
-max-width:1100px;
-margin:auto;
-padding:15px;
+  max-width:1150px;
+  margin:auto;
+  padding:15px;
 }
 
 .panel{
-background:white;
-border-radius:16px;
-padding:16px;
-margin-bottom:16px;
-box-shadow:0 4px 15px #0002;
+  background:white;
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:17px;
+  box-shadow:0 5px 18px #0002;
 }
 
+.panel h2{
+  margin-top:0;
+}
+
+/* 통계 */
 .stats{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:10px;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
 }
 
 .stat{
-background:#f2faf3;
-border-radius:12px;
-padding:12px;
-text-align:center;
+  background:#f1faf2;
+  border-radius:13px;
+  padding:12px;
+  text-align:center;
+  border:1px solid #dcefe0;
 }
 
 .stat b{
-display:block;
-font-size:22px;
-margin-top:5px;
+  display:block;
+  font-size:23px;
+  margin-top:5px;
 }
 
+/* 부모 */
+.parents{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:12px 0;
+}
+
+.parent-slot{
+  min-height:75px;
+  border:2px dashed #b9d9bf;
+  border-radius:13px;
+  padding:12px;
+  background:#f8fff9;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.parent-slot.active{
+  border:3px solid #39a956;
+  background:#eaffee;
+}
+
+.parent-number{
+  font-size:13px;
+  color:#51805b;
+  font-weight:bold;
+}
+
+.parent-name{
+  font-weight:bold;
+  margin-top:5px;
+}
+
+/* 버튼 */
 button{
-border:0;
-border-radius:9px;
-padding:10px 13px;
-cursor:pointer;
-font-weight:bold;
-margin:3px;
+  border:0;
+  border-radius:10px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-weight:bold;
+  margin:3px;
+  transition:.15s;
+}
+
+button:hover{
+  transform:translateY(-1px);
+  filter:brightness(1.04);
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+  transform:none;
 }
 
 #breed{
-background:#3c9d50;
-color:white;
-font-size:16px;
+  background:#349d4e;
+  color:white;
+  font-size:16px;
 }
 
 #auto{
-background:#ffb52e;
+  background:#ffb52e;
 }
 
 #reset{
-background:#e85b5b;
-color:white;
+  background:#e85b5b;
+  color:white;
 }
 
-.parents{
-display:flex;
-gap:8px;
-flex-wrap:wrap;
-margin:10px 0;
+/* 최근 탄생 */
+.born-box{
+  border:3px solid #8bd39a;
+  border-radius:18px;
+  padding:18px;
+  background:linear-gradient(135deg,#f8fff9,#edfff1);
+  display:none;
 }
 
-.pill{
-background:#e7f5e9;
-padding:8px 12px;
-border-radius:20px;
+.born-box.show{
+  display:block;
+  animation:bornAppear .35s ease;
 }
 
+@keyframes bornAppear{
+  from{transform:scale(.96);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+.born-title{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+.born-name{
+  font-size:24px;
+  font-weight:900;
+  margin-bottom:8px;
+}
+
+.born-genotype{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin:10px 0;
+}
+
+.born-info{
+  font-size:16px;
+  line-height:1.7;
+}
+
+.born-traits{
+  margin-top:10px;
+  padding:10px;
+  background:white;
+  border-radius:10px;
+}
+
+/* 컬렉션 */
 .grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
-gap:12px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+  gap:14px;
 }
 
 .card{
-border:2px solid #e0ebe1;
-border-radius:14px;
-padding:14px;
-background:white;
+  border:2px solid #dfeae1;
+  border-radius:16px;
+  padding:15px;
+  background:white;
+  position:relative;
+  transition:.2s;
 }
 
+.card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 15px #0002;
+}
+
+/* 선택된 카드 */
 .card.selected{
-border-color:#42a858;
-background:#f3fff4;
+  border:4px solid #24a849;
+  background:linear-gradient(135deg,#ecfff0,#fafffb);
+  box-shadow:
+    0 0 0 4px #8be49d88,
+    0 7px 22px #299b4738;
+  transform:translateY(-3px);
+}
+
+.selected-badge{
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:#24a849;
+  color:white;
+  padding:6px 9px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+  box-shadow:0 2px 6px #0003;
 }
 
 .card.locked{
-opacity:.7;
+  opacity:.65;
+  filter:grayscale(.25);
 }
 
+/* 이름 */
 .name{
-font-weight:bold;
-font-size:17px;
+  font-weight:900;
+  font-size:18px;
+  padding-right:90px;
 }
 
+/* 희귀도 */
 .rarity{
-font-size:13px;
-margin:5px 0 10px;
+  display:inline-block;
+  margin:7px 0 10px;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:900;
 }
 
+.rarity-common{
+  background:#e8f3e9;
+  color:#48704f;
+}
+
+.rarity-rare{
+  background:#e6f0ff;
+  color:#2764ad;
+}
+
+.rarity-super{
+  background:#f1e7ff;
+  color:#7041a8;
+}
+
+.rarity-special{
+  background:#fff0bd;
+  color:#a66a00;
+}
+
+.rarity-legend{
+  background:linear-gradient(90deg,#ffe88a,#fff7c8,#ffd75e);
+  color:#8a5900;
+  box-shadow:0 0 12px #ffd83d99;
+}
+
+/* 유전자 */
 .genes{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:5px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin:8px 0;
 }
 
 .gene{
-background:#f0f6f1;
-padding:6px;
-border-radius:7px;
-text-align:center;
-font-weight:bold;
+  background:#eef5ef;
+  padding:8px 5px;
+  border-radius:8px;
+  text-align:center;
+  font-weight:900;
+  border:1px solid #dbe7dc;
+}
+
+/* 열성 유전자 강조 */
+.gene.recessive{
+  background:linear-gradient(135deg,#ffe8fa,#f4d7ff);
+  color:#8a237b;
+  border:2px solid #d66ac4;
+  box-shadow:0 0 8px #d66ac444;
+  font-size:15px;
+}
+
+.recessive-label{
+  color:#a1268f;
+  font-weight:900;
 }
 
 .phen{
-font-size:13px;
-line-height:1.5;
-margin:10px 0;
+  font-size:13px;
+  line-height:1.55;
+  margin:10px 0;
+  background:#f7faf7;
+  padding:9px;
+  border-radius:9px;
 }
 
-.log{
-background:#17231a;
-color:#d8f7dd;
-border-radius:10px;
-padding:10px;
-max-height:180px;
-overflow:auto;
-font-family:monospace;
-font-size:13px;
+.recessive-count{
+  font-weight:900;
+  margin:7px 0;
 }
 
+/* 완전 열성 */
+.card.perfect{
+  border-color:#e1b52b;
+  background:linear-gradient(135deg,#fffbea,#fff);
+  box-shadow:0 0 18px #e5bd3d55;
+}
+
+/* 6 열성 */
+.card.six{
+  border-color:#b078df;
+  background:linear-gradient(135deg,#fbf5ff,#fff);
+}
+
+/* 도감 */
 .codex-row{
-padding:8px;
-border-bottom:1px solid #e5eee6;
+  padding:9px;
+  border-bottom:1px solid #e5eee6;
+  font-family:monospace;
 }
 
+/* 기록 */
+.log{
+  background:#17231a;
+  color:#d8f7dd;
+  border-radius:10px;
+  padding:10px;
+  max-height:200px;
+  overflow:auto;
+  font-family:monospace;
+  font-size:13px;
+}
+
+/* 축하 */
 .celebrate{
-position:fixed;
-inset:0;
-background:#0009;
-display:none;
-place-items:center;
-z-index:10;
+  position:fixed;
+  inset:0;
+  background:#000a;
+  display:none;
+  place-items:center;
+  z-index:20;
+  overflow:hidden;
 }
 
 .celebrate.show{
-display:grid;
+  display:grid;
 }
 
 .celebrate-box{
-background:white;
-padding:30px;
-border-radius:22px;
-text-align:center;
-max-width:420px;
-margin:20px;
+  background:white;
+  padding:30px;
+  border-radius:22px;
+  text-align:center;
+  max-width:470px;
+  width:calc(100% - 35px);
+  position:relative;
+  z-index:30;
+  box-shadow:0 10px 40px #0006;
+  animation:pop .4s ease;
+}
+
+@keyframes pop{
+  0%{transform:scale(.5);opacity:0}
+  70%{transform:scale(1.05)}
+  100%{transform:scale(1);opacity:1}
 }
 
 .celebrate-box h2{
-font-size:28px;
+  font-size:29px;
+  margin-top:0;
 }
 
 .celebrate-box button{
-background:#2f8f46;
-color:white;
+  background:#2f8f46;
+  color:white;
 }
 
+/* 폭죽 캔버스 */
+#fireworks{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:25;
+}
+
+/* 모바일 */
 @media(max-width:800px){
-.stats{
-grid-template-columns:repeat(2,1fr);
-}
-.stats .stat:last-child{
-grid-column:span 2;
-}
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .stats .stat:last-child{
+    grid-column:span 2;
+  }
+
+  .parents{
+    grid-template-columns:1fr;
+  }
+
+  header h1{
+    font-size:24px;
+  }
 }
 </style>
 </head>
@@ -207,113 +441,154 @@ grid-column:span 2;
 <body>
 
 <header>
-<h1>🌱 완두콩 유전 교배 게임</h1>
-<p>멘델의 7가지 형질을 교배해서 희귀한 완두콩을 만들어보세요!</p>
+  <h1>🌱 완두콩 유전 교배 게임</h1>
+  <p>멘델의 7가지 형질을 교배해서 희귀한 완두콩을 만들어보세요!</p>
 </header>
 
 <main>
 
+<!-- 통계 -->
+<div class="panel">
+  <div class="stats">
+    <div class="stat">
+      보유 완두콩
+      <b id="owned">0</b>
+    </div>
+
+    <div class="stat">
+      총 교배
+      <b id="total">0</b>
+    </div>
+
+    <div class="stat">
+      다음 교배
+      <b id="cooldown">가능</b>
+    </div>
+
+    <div class="stat">
+      7개 완전 열성
+      <b id="perfect">0</b>
+    </div>
+
+    <div class="stat">
+      6개 열성
+      <b id="six">0</b>
+    </div>
+  </div>
+</div>
+
+
+<!-- 교배 -->
 <div class="panel">
 
-<div class="stats">
+  <h2>🧬 교배하기</h2>
 
-<div class="stat">
-보유 완두콩
-<b id="owned">0</b>
-</div>
+  <div id="parents" class="parents">
 
-<div class="stat">
-총 교배
-<b id="total">0</b>
-</div>
+    <div class="parent-slot">
+      <div class="parent-number">1번 부모</div>
+      <div class="parent-name">선택되지 않음</div>
+    </div>
 
-<div class="stat">
-다음 교배
-<b id="cooldown">가능</b>
-</div>
+    <div class="parent-slot">
+      <div class="parent-number">2번 부모</div>
+      <div class="parent-name">선택되지 않음</div>
+    </div>
 
-<div class="stat">
-7개 완전 열성
-<b id="perfect">0</b>
-</div>
+  </div>
 
-<div class="stat">
-6개 열성
-<b id="six">0</b>
-</div>
+  <button id="breed">🌱 교배하기</button>
+  <button id="auto">▶️ 자동 교배</button>
+  <button id="reset">🔄 게임 초기화</button>
 
-</div>
+  <p>
+    ※ 테스트를 위해 교배 쿨타임은 <b>1초</b>입니다.
+  </p>
 
 </div>
 
 
+<!-- 최근 탄생 -->
 <div class="panel">
 
-<h2>🧬 교배</h2>
+  <div id="bornBox" class="born-box">
 
-<div id="parents" class="parents">
-<span>부모 2마리를 선택해주세요.</span>
+    <div class="born-title">
+      🎉 최근 탄생한 완두콩
+    </div>
+
+    <div id="bornName" class="born-name"></div>
+
+    <div id="bornRarity"></div>
+
+    <div id="bornGenotype" class="born-genotype"></div>
+
+    <div id="bornInfo" class="born-info"></div>
+
+    <div id="bornTraits" class="born-traits"></div>
+
+  </div>
+
 </div>
 
-<button id="breed">🌱 교배하기</button>
 
-<button id="auto">▶️ 자동 교배</button>
-
-<button id="reset">🔄 게임 초기화</button>
-
-<p>
-※ 테스트를 위해 교배 쿨타임은 <b>1초</b>입니다.
-</p>
-
-</div>
-
-
+<!-- 도감 -->
 <div class="panel">
 
-<h2>📚 도감</h2>
+  <h2>📚 유전자 도감</h2>
 
-<p>
-처음 얻은 유전자 조합은 자동으로 도감에 등록됩니다.
-</p>
+  <p>
+    처음 얻은 유전자 조합은 자동으로 도감에 등록됩니다.
+  </p>
 
-<div id="codex"></div>
-
-</div>
-
-
-<div class="panel">
-
-<h2>🌿 내 완두콩</h2>
-
-<div id="collection" class="grid"></div>
+  <div id="codex"></div>
 
 </div>
 
 
+<!-- 완두콩 -->
 <div class="panel">
 
-<h2>📜 기록</h2>
+  <h2>🌿 내 완두콩</h2>
 
-<div id="log" class="log"></div>
+  <p>
+    💡 부모로 선택하려면 <b>부모 선택</b>을 누르세요.
+    선택된 완두콩은 초록색 테두리로 크게 강조됩니다.
+  </p>
+
+  <div id="collection" class="grid"></div>
+
+</div>
+
+
+<!-- 기록 -->
+<div class="panel">
+
+  <h2>📜 기록</h2>
+
+  <div id="log" class="log"></div>
 
 </div>
 
 </main>
 
 
+<!-- 축하창 -->
 <div id="celebrate" class="celebrate">
 
-<div class="celebrate-box">
+  <canvas id="fireworks"></canvas>
 
-<h2 id="celebrateTitle"></h2>
+  <div class="celebrate-box">
 
-<p id="celebrateText"></p>
+    <h2 id="celebrateTitle"></h2>
 
-<button onclick="closeCelebrate()">
-확인
-</button>
+    <p id="celebrateText"></p>
 
-</div>
+    <div id="celebrateGenes"></div>
+
+    <button onclick="closeCelebrate()">확인</button>
+
+  </div>
 
 </div>
 
@@ -322,76 +597,68 @@ grid-column:span 2;
 
 const loci=[
 
-{
-key:"R",
-dom:"둥근 씨앗",
-rec:"주름진 씨앗"
-},
+  {
+    key:"R",
+    dom:"둥근 씨앗",
+    rec:"주름진 씨앗"
+  },
 
-{
-key:"Y",
-dom:"노란 씨앗",
-rec:"초록 씨앗"
-},
+  {
+    key:"Y",
+    dom:"노란 씨앗",
+    rec:"초록 씨앗"
+  },
 
-{
-key:"P",
-dom:"보라색 꽃",
-rec:"흰색 꽃"
-},
+  {
+    key:"P",
+    dom:"보라색 꽃",
+    rec:"흰색 꽃"
+  },
 
-{
-key:"I",
-dom:"부푼 꼬투리",
-rec:"잘록한 꼬투리"
-},
+  {
+    key:"I",
+    dom:"부푼 꼬투리",
+    rec:"잘록한 꼬투리"
+  },
 
-{
-key:"G",
-dom:"초록 꼬투리",
-rec:"노란 꼬투리"
-},
+  {
+    key:"G",
+    dom:"초록 꼬투리",
+    rec:"노란 꼬투리"
+  },
 
-{
-key:"A",
-dom:"겨드랑이 꽃",
-rec:"끝 꽃"
-},
+  {
+    key:"A",
+    dom:"겨드랑이 꽃",
+    rec:"끝 꽃"
+  },
 
-{
-key:"T",
-dom:"키 큰 줄기",
-rec:"짧은 줄기"
-}
+  {
+    key:"T",
+    dom:"키 큰 줄기",
+    rec:"짧은 줄기"
+  }
 
 ];
 
 
 const starter=[
-"Rr",
-"Yy",
-"Pp",
-"Ii",
-"Gg",
-"Aa",
-"Tt"
+  "Rr",
+  "Yy",
+  "Pp",
+  "Ii",
+  "Gg",
+  "Aa",
+  "Tt"
 ];
 
 
 let idSeq=2;
 
 let peas=[
-makePea(
-"🌱 시작 완두콩 A",
-starter
-),
-
-makePea(
-"🌱 시작 완두콩 B",
-starter
-)
+  makePea("🌱 시작 완두콩 A",starter),
+  makePea("🌱 시작 완두콩 B",starter)
 ];
-
 
 let selected=[];
 
@@ -407,108 +674,126 @@ let auto=false;
 
 let cooldownUntil=0;
 
+let lastBorn=null;
+
+
+/* 완두콩 생성 */
 
 function makePea(name,genes){
 
-return{
-
-id:++idSeq,
-
-name:name,
-
-genes:[...genes],
-
-fav:false,
-
-locked:false
-
-};
+  return{
+    id:++idSeq,
+    name:name,
+    genes:[...genes],
+    fav:false,
+    locked:false
+  };
 
 }
 
+
+/* 유전자 키 */
 
 function keyOf(pea){
 
-return pea.genes.join(" / ");
+  return pea.genes.join(" / ");
 
 }
 
+
+/* 열성 개수 */
 
 function recessiveCount(genes){
 
-return genes.filter(
-
-g =>
-
-g[0]===g[1] &&
-
-g[0]===g[0].toLowerCase()
-
-).length;
+  return genes.filter(g=>
+    g[0]===g[1] &&
+    g[0]===g[0].toLowerCase()
+  ).length;
 
 }
 
+
+/* 표현형 */
 
 function phenotype(genes){
 
-return genes.map(
+  return genes.map((g,i)=>{
 
-(g,i)=>
+    const recessive=
+      g[0]===g[1] &&
+      g[0]===g[0].toLowerCase();
 
-g[0]===g[1] &&
+    return recessive
+      ? loci[i].rec
+      : loci[i].dom;
 
-g[0]===g[0].toLowerCase()
-
-?loci[i].rec
-
-:loci[i].dom
-
-);
+  });
 
 }
 
+
+/* 희귀도 */
 
 function rarity(genes){
 
-const n=recessiveCount(genes);
+  const n=recessiveCount(genes);
 
-if(n===7)return "🌟🌟🌟 전설";
+  if(n===7) return {
+    text:"🌟🌟🌟 전설",
+    cls:"rarity-legend"
+  };
 
-if(n===6)return "🌟🌟 특별";
+  if(n===6) return {
+    text:"🌟🌟 특별",
+    cls:"rarity-special"
+  };
 
-if(n>=4)return "💎 초희귀";
+  if(n>=4) return {
+    text:"💎 초희귀",
+    cls:"rarity-super"
+  };
 
-if(n>=2)return "✨ 희귀";
+  if(n>=2) return {
+    text:"✨ 희귀",
+    cls:"rarity-rare"
+  };
 
-return "🌱 일반";
+  return {
+    text:"🌱 일반",
+    cls:"rarity-common"
+  };
 
 }
 
+
+/* 기록 */
 
 function addLog(text){
 
-const log=document.getElementById("log");
+  const log=document.getElementById("log");
 
-const div=document.createElement("div");
+  const div=document.createElement("div");
 
-div.textContent="• "+text;
+  div.textContent="• "+text;
 
-log.prepend(div);
+  log.prepend(div);
 
 }
 
+
+/* 도감 등록 */
 
 function register(pea){
 
-const key=keyOf(pea);
+  const key=keyOf(pea);
 
-if(!codex.has(key)){
+  if(!codex.has(key)){
 
-codex.add(key);
+    codex.add(key);
 
-addLog("📖 새로운 유전자 조합 발견!");
+    addLog("📖 새로운 유전자 조합 발견!");
 
-}
+  }
 
 }
 
@@ -516,548 +801,1033 @@ addLog("📖 새로운 유전자 조합 발견!");
 peas.forEach(register);
 
 
+/* 화면 전체 */
+
 function render(){
 
-document.getElementById("owned").textContent=peas.length;
+  document.getElementById("owned").textContent=peas.length;
 
-document.getElementById("total").textContent=total;
+  document.getElementById("total").textContent=total;
 
-document.getElementById("perfect").textContent=perfect;
+  document.getElementById("perfect").textContent=perfect;
 
-document.getElementById("six").textContent=sixCount;
+  document.getElementById("six").textContent=sixCount;
 
-updateCooldown();
+  updateCooldown();
 
-renderParents();
+  renderParents();
 
-renderCodex();
+  renderCodex();
 
-renderCollection();
+  renderCollection();
 
 }
 
+
+/* 부모 표시 */
 
 function renderParents(){
 
-const el=document.getElementById("parents");
+  const el=document.getElementById("parents");
 
-el.innerHTML="";
+  el.innerHTML="";
 
-if(selected.length===0){
+  for(let i=0;i<2;i++){
 
-el.innerHTML="<span>부모 2마리를 선택해주세요.</span>";
+    const slot=document.createElement("div");
 
-return;
+    slot.className="parent-slot";
+
+    if(selected[i]){
+
+      const pea=peas.find(p=>p.id===selected[i]);
+
+      if(pea){
+
+        slot.classList.add("active");
+
+        slot.innerHTML=`
+
+          <div class="parent-number">
+            ${i+1}번 부모 ✓ 선택됨
+          </div>
+
+          <div class="parent-name">
+            ${pea.name}
+          </div>
+
+          <div>
+            ${pea.genes.join(" ")}
+          </div>
+
+        `;
+
+      }
+
+    }else{
+
+      slot.innerHTML=`
+
+        <div class="parent-number">
+          ${i+1}번 부모
+        </div>
+
+        <div class="parent-name">
+          선택되지 않음
+        </div>
+
+      `;
+
+    }
+
+    el.appendChild(slot);
+
+  }
 
 }
 
-selected.forEach(id=>{
 
-const pea=peas.find(p=>p.id===id);
-
-if(pea){
-
-const span=document.createElement("span");
-
-span.className="pill";
-
-span.textContent=pea.name;
-
-el.appendChild(span);
-
-}
-
-});
-
-}
-
+/* 도감 */
 
 function renderCodex(){
 
-const el=document.getElementById("codex");
+  const el=document.getElementById("codex");
 
-el.innerHTML="";
+  el.innerHTML="";
 
-[...codex].forEach((key,index)=>{
+  [...codex].forEach((key,index)=>{
 
-const div=document.createElement("div");
+    const div=document.createElement("div");
 
-div.className="codex-row";
+    div.className="codex-row";
 
-div.textContent="#"+(index+1)+"  "+key;
+    div.textContent=
+      "#"+(index+1)+"  "+key;
 
-el.appendChild(div);
+    el.appendChild(div);
 
-});
+  });
 
 }
 
+
+/* 완두콩 목록 */
 
 function renderCollection(){
 
-const el=document.getElementById("collection");
+  const el=document.getElementById("collection");
 
-el.innerHTML="";
+  el.innerHTML="";
 
+  peas.slice().reverse().forEach(pea=>{
 
-peas.slice().reverse().forEach(pea=>{
+    const count=
+      recessiveCount(pea.genes);
 
-const card=document.createElement("div");
+    const rare=
+      rarity(pea.genes);
 
-card.className="card"+
+    const card=
+      document.createElement("div");
 
-(selected.includes(pea.id)?" selected":"")+
+    card.className="card";
 
-(pea.locked?" locked":"");
+    if(selected.includes(pea.id))
+      card.classList.add("selected");
 
+    if(pea.locked)
+      card.classList.add("locked");
 
-const genes=pea.genes.map(
+    if(count===7)
+      card.classList.add("perfect");
 
-g=>`<span class="gene">${g}</span>`
-
-).join("");
-
-
-const phen=phenotype(pea.genes)
-
-.map(
-
-(x,i)=>loci[i].key+": "+x
-
-)
-
-.join("<br>");
+    else if(count===6)
+      card.classList.add("six");
 
 
-card.innerHTML=`
+    /* 선택 배지 */
 
-<div class="name">
+    if(selected.includes(pea.id)){
 
-${pea.name}
+      const badge=
+        document.createElement("div");
 
-${pea.fav?" ⭐":""}
+      badge.className="selected-badge";
 
-${pea.locked?" 🔒":""}
+      badge.textContent=
+        selected[0]===pea.id
+        ? "✓ 1번 부모"
+        : "✓ 2번 부모";
 
-</div>
+      card.appendChild(badge);
 
-<div class="rarity">
-
-${rarity(pea.genes)}
-
-</div>
-
-<div class="genes">
-
-${genes}
-
-</div>
-
-<div class="phen">
-
-${phen}
-
-</div>
-
-<button class="select">
-
-${selected.includes(pea.id)?"선택 해제":"부모 선택"}
-
-</button>
-
-<button class="fav">
-
-${pea.fav?"⭐ 즐겨찾기 해제":"⭐ 즐겨찾기"}
-
-</button>
-
-<button class="lock">
-
-${pea.locked?"🔓 잠금 해제":"🔒 잠금"}
-
-</button>
-
-`;
+    }
 
 
-card.querySelector(".select").onclick=()=>{
+    /* 이름 */
 
-toggleSelect(pea.id);
+    const name=
+      document.createElement("div");
 
-};
+    name.className="name";
+
+    name.textContent=
+      pea.name+
+      (pea.fav?" ⭐":"")+
+      (pea.locked?" 🔒":"");
+
+    card.appendChild(name);
 
 
-card.querySelector(".fav").onclick=()=>{
+    /* 희귀도 */
 
-pea.fav=!pea.fav;
+    const rarityDiv=
+      document.createElement("div");
 
-render();
+    rarityDiv.className=
+      "rarity "+rare.cls;
 
-};
+    rarityDiv.textContent=
+      rare.text;
+
+    card.appendChild(rarityDiv);
 
 
-card.querySelector(".lock").onclick=()=>{
+    /* 유전자 */
 
-pea.locked=!pea.locked;
+    const genes=
+      document.createElement("div");
 
-if(pea.locked){
+    genes.className="genes";
 
-selected=selected.filter(
 
-id=>id!==pea.id
+    pea.genes.forEach(g=>{
 
-);
+      const span=
+        document.createElement("span");
+
+      span.className="gene";
+
+      const isRecessive=
+        g[0]===g[1] &&
+        g[0]===g[0].toLowerCase();
+
+      if(isRecessive){
+
+        span.classList.add("recessive");
+
+        span.textContent=
+          "◆ "+g;
+
+      }else{
+
+        span.textContent=g;
+
+      }
+
+      genes.appendChild(span);
+
+    });
+
+    card.appendChild(genes);
+
+
+    /* 열성 개수 */
+
+    const recessiveText=
+      document.createElement("div");
+
+    recessiveText.className=
+      "recessive-count";
+
+    recessiveText.innerHTML=
+      count===7
+      ? "🔥 <span class='recessive-label'>7/7 완전 열성!</span>"
+      : "🧬 열성 형질: "+count+"/7";
+
+    card.appendChild(recessiveText);
+
+
+    /* 표현형 */
+
+    const phen=
+      document.createElement("div");
+
+    phen.className="phen";
+
+    phenotype(pea.genes).forEach((x,i)=>{
+
+      const line=
+        document.createElement("div");
+
+      const isRec=
+        pea.genes[i][0]===
+pea.genes[i][1] &&
+        pea.genes[i][0]===
+        pea.genes[i][0].toLowerCase();
+
+      line.innerHTML=
+        "<b>"+loci[i].key+
+        ":</b> "+
+        (isRec
+          ? "<span class='recessive-label'>"+x+"</span>"
+          : x);
+
+      phen.appendChild(line);
+
+    });
+
+    card.appendChild(phen);
+
+
+    /* 버튼 */
+
+    const selectBtn=
+      document.createElement("button");
+
+    selectBtn.className="select";
+
+    selectBtn.textContent=
+      selected.includes(pea.id)
+      ? "✓ 부모 선택 해제"
+      : "🧬 부모 선택";
+
+    selectBtn.onclick=()=>{
+      toggleSelect(pea.id);
+    };
+
+
+    const favBtn=
+      document.createElement("button");
+
+    favBtn.className="fav";
+
+    favBtn.textContent=
+      pea.fav
+      ? "⭐ 즐겨찾기 해제"
+      : "⭐ 즐겨찾기";
+
+    favBtn.onclick=()=>{
+
+      pea.fav=!pea.fav;
+
+      render();
+
+    };
+
+
+    const lockBtn=
+      document.createElement("button");
+
+    lockBtn.className="lock";
+
+    lockBtn.textContent=
+      pea.locked
+      ? "🔓 잠금 해제"
+      : "🔒 잠금";
+
+    lockBtn.onclick=()=>{
+
+      pea.locked=!pea.locked;
+
+      if(pea.locked){
+
+        selected=
+          selected.filter(
+            id=>id!==pea.id
+          );
+
+      }
+
+      render();
+
+    };
+
+
+    card.appendChild(selectBtn);
+
+    card.appendChild(favBtn);
+
+    card.appendChild(lockBtn);
+
+    el.appendChild(card);
+
+  });
 
 }
 
-render();
 
-};
-
-
-el.appendChild(card);
-
-});
-
-}
-
+/* 부모 선택 */
 
 function toggleSelect(id){
 
-const pea=peas.find(p=>p.id===id);
+  const pea=
+    peas.find(p=>p.id===id);
 
-if(!pea || pea.locked)return;
+  if(!pea || pea.locked)
+    return;
 
 
-if(selected.includes(id)){
+  /* 이미 선택 */
+  if(selected.includes(id)){
 
-selected=selected.filter(x=>x!==id);
+    selected=
+      selected.filter(x=>x!==id);
+
+  }
+
+  else{
+
+    if(selected.length>=2){
+
+      selected.shift();
+
+    }
+
+    selected.push(id);
+
+    addLog(
+      "🧬 "+
+      pea.name+
+      " 을(를) 부모로 선택했습니다."
+    );
+
+  }
+
+  render();
 
 }
 
-else{
 
-if(selected.length>=2){
-
-selected.shift();
-
-}
-
-selected.push(id);
-
-}
-
-render();
-
-}
-
+/* 쿨타임 */
 
 function getCooldown(){
 
-return Math.max(
-
-0,
-
-cooldownUntil-Date.now()
-
-);
+  return Math.max(
+    0,
+    cooldownUntil-Date.now()
+  );
 
 }
 
 
 function updateCooldown(){
 
-const el=document.getElementById("cooldown");
+  const el=
+    document.getElementById("cooldown");
 
-const ms=getCooldown();
+  const ms=getCooldown();
 
-el.textContent=
+  el.textContent=
+    ms>0
+    ? (ms/1000).toFixed(1)+"초"
+    : "가능";
 
-ms>0
+  document.getElementById("breed").disabled=
+    ms>0;
 
-?((ms/1000).toFixed(1)+"초")
+  if(ms>0){
 
-:"가능";
+    setTimeout(
+      updateCooldown,
+      100
+    );
 
-
-document.getElementById("breed").disabled=
-
-ms>0;
-
-
-if(ms>0){
-
-setTimeout(updateCooldown,100);
-
-}
+  }
 
 }
 
+
+/* 교배 */
 
 function breedOnce(){
 
-if(getCooldown()>0){
+  if(getCooldown()>0)
+    return false;
 
-return false;
+
+  if(selected.length!==2){
+
+    addLog(
+      "⚠️ 부모 2마리를 선택해주세요."
+    );
+
+    return false;
+
+  }
+
+
+  const parentA=
+    peas.find(
+      p=>p.id===selected[0]
+    );
+
+  const parentB=
+    peas.find(
+      p=>p.id===selected[1]
+    );
+
+
+  if(
+    !parentA ||
+    !parentB ||
+    parentA.locked ||
+    parentB.locked
+  ){
+
+    addLog(
+      "⚠️ 잠긴 완두콩은 교배할 수 없습니다."
+    );
+
+    return false;
+
+  }
+
+
+  /* 자식 유전자 생성 */
+
+  const genes=
+    loci.map((_,i)=>{
+
+      const alleleA=
+        parentA.genes[i]
+        [Math.floor(Math.random()*2)];
+
+      const alleleB=
+        parentB.genes[i]
+        [Math.floor(Math.random()*2)];
+
+
+      return [
+        alleleA,
+        alleleB
+      ]
+      .sort((a,b)=>{
+
+        if(
+          a===a.toUpperCase()
+        )
+          return -1;
+
+        if(
+          b===b.toUpperCase()
+        )
+          return 1;
+
+        return 0;
+
+      })
+      .join("");
+
+    });
+
+
+  const pea=
+    makePea(
+      "🌱 교배 완두콩 #"+
+      (peas.length-1),
+      genes
+    );
+
+
+  peas.push(pea);
+
+  total++;
+
+  cooldownUntil=
+    Date.now()+1000;
+
+
+  register(pea);
+
+
+  const recessive=
+    recessiveCount(genes);
+
+
+  /* 최근 탄생 표시 */
+
+  lastBorn=pea;
+
+  renderBorn(pea);
+
+
+  /* 희귀 이벤트 */
+
+  if(recessive===7){
+
+    perfect++;
+
+    addLog(
+      "🌟🌟🌟 전설 탄생! "+
+      pea.name
+    );
+
+    showCelebrate(
+      "🎉🌟 전설의 완두콩 탄생!",
+      "7개 형질이 모두 완전 열성입니다!",
+      pea,
+      true
+    );
+
+  }
+
+  else if(recessive===6){
+
+    sixCount++;
+
+    addLog(
+      "🌟🌟 특별한 완두콩 탄생! "+
+      pea.name
+    );
+
+    showCelebrate(
+      "🎉 특별한 완두콩!",
+      "7개 중 6개 형질이 열성입니다!",
+      pea,
+      false
+    );
+
+  }
+
+  else{
+
+    addLog(
+      "🌱 새로운 완두콩 생성! "+
+      "열성 형질 "+
+      recessive+"/7"
+    );
+
+  }
+
+
+  render();
+
+  return true;
 
 }
 
 
-if(selected.length!==2){
+/* 최근 탄생 */
 
-addLog("⚠️ 부모 2마리를 선택해주세요.");
+function renderBorn(pea){
 
-return false;
+  const box=
+    document.getElementById("bornBox");
+
+  box.classList.add("show");
+
+
+  document.getElementById("bornName")
+    .textContent=pea.name;
+
+
+  const rare=
+    rarity(pea.genes);
+
+  const rareBox=
+    document.getElementById("bornRarity");
+
+  rareBox.className=
+    "rarity "+rare.cls;
+
+  rareBox.textContent=
+    rare.text;
+
+
+  const genotype=
+    document.getElementById(
+      "bornGenotype"
+    );
+
+  genotype.innerHTML="";
+
+
+  pea.genes.forEach(g=>{
+
+    const span=
+      document.createElement("span");
+
+    span.className="gene";
+
+    const isRec=
+      g[0]===g[1] &&
+      g[0]===g[0].toLowerCase();
+
+    if(isRec)
+      span.classList.add("recessive");
+
+    span.textContent=
+      isRec ? "◆ "+g : g;
+
+    genotype.appendChild(span);
+
+  });
+
+
+  const count=
+    recessiveCount(pea.genes);
+
+
+  document.getElementById("bornInfo")
+    .innerHTML=
+      "🧬 <b>열성 형질:</b> "+
+      count+"/7";
+
+
+  const traits=
+    document.getElementById(
+      "bornTraits"
+    );
+
+  traits.innerHTML=
+    "<b>🌿 형질</b><br><br>";
+
+
+  phenotype(pea.genes).forEach((x,i)=>{
+
+    const isRec=
+      pea.genes[i][0]===
+      pea.genes[i][1] &&
+      pea.genes[i][0]===
+      pea.genes[i][0].toLowerCase();
+
+    traits.innerHTML+=
+      loci[i].key+
+      ": "+
+      (isRec
+        ? "<span class='recessive-label'>"+
+          x+
+          "</span>"
+        : x)+
+      "<br>";
+
+  });
 
 }
 
 
-const parentA=
+/* 축하창 */
 
-peas.find(p=>p.id===selected[0]);
-
-const parentB=
-
-peas.find(p=>p.id===selected[1]);
-
-
-if(
-
-!parentA||
-
-!parentB||
-
-parentA.locked||
-
-parentB.locked
-
+function showCelebrate(
+  title,
+  text,
+  pea,
+  fireworks
 ){
 
-addLog("⚠️ 잠긴 완두콩은 교배할 수 없습니다.");
-
-return false;
-
-}
+  document.getElementById(
+    "celebrateTitle"
+  ).textContent=title;
 
 
-const genes=loci.map((_,i)=>{
-
-const alleleA=
-
-parentA.genes[i][
-
-Math.floor(Math.random()*2)
-
-];
+  document.getElementById(
+    "celebrateText"
+  ).textContent=text;
 
 
-const alleleB=
+  const box=
+    document.getElementById(
+      "celebrateGenes"
+    );
 
-parentB.genes[i][
-
-Math.floor(Math.random()*2)
-
-];
-
-
-return [alleleA,alleleB]
-
-.sort((a,b)=>{
-
-if(a===a.toUpperCase())return -1;
-
-if(b===b.toUpperCase())return 1;
-
-return 0;
-
-})
-
-.join("");
-
-});
+  box.innerHTML=
+    "<b>🧬 "+pea.genes.join(" ")+"</b>";
 
 
-const pea=makePea(
-
-"🌱 교배 완두콩 #"+(peas.length-1),
-
-genes
-
-);
+  document
+    .getElementById("celebrate")
+    .classList.add("show");
 
 
-peas.push(pea);
+  if(fireworks){
 
-total++;
+    startFireworks();
 
-cooldownUntil=Date.now()+1000;
-
-register(pea);
-
-
-const recessive=recessiveCount(genes);
-
-
-if(recessive===7){
-
-perfect++;
-
-showCelebrate(
-
-"🎉🎉🎉 전설의 완두콩 탄생!",
-
-"7개 형질이 모두 완전 열성입니다! rr yy pp ii gg aa tt"
-
-);
+  }
 
 }
 
 
-else if(recessive===6){
+/* 축하창 닫기 */
 
-sixCount++;
+function closeCelebrate(){
 
-showCelebrate(
+  document
+    .getElementById("celebrate")
+    .classList.remove("show");
 
-"🎉 특별한 완두콩!",
-
-"7개 중 6개 형질이 열성입니다!"
-
-);
+  stopFireworks();
 
 }
 
 
-addLog(
-
-"🌱 새로운 완두콩 생성! 열성 형질 "+
-
-recessive+
-
-"/7"
-
-);
-
-
-render();
-
-return true;
-
-}
-
+/* 자동 교배 */
 
 function toggleAuto(){
 
-auto=!auto;
+  auto=!auto;
 
-const button=document.getElementById("auto");
-
-button.textContent=
-
-auto
-
-?"⏹️ 자동 교배 중"
-
-:"▶️ 자동 교배";
+  const button=
+    document.getElementById("auto");
 
 
-if(auto){
+  button.textContent=
+    auto
+    ? "⏹️ 자동 교배 중"
+    : "▶️ 자동 교배";
 
-autoLoop();
 
-}
+  if(auto)
+    autoLoop();
 
 }
 
 
 function autoLoop(){
 
-if(!auto)return;
+  if(!auto)
+    return;
 
-breedOnce();
+  breedOnce();
 
-setTimeout(
+  setTimeout(
+    autoLoop,
+    1050
+  );
 
-autoLoop,
+}
 
-1050
 
+/* ========================= */
+/* 폭죽 시스템 */
+/* ========================= */
+
+const canvas=
+  document.getElementById(
+    "fireworks"
+  );
+
+const ctx=
+  canvas.getContext("2d");
+
+let fireworksRunning=false;
+
+let particles=[];
+
+
+function resizeCanvas(){
+
+  canvas.width=
+    window.innerWidth;
+
+  canvas.height=
+    window.innerHeight;
+
+}
+
+
+window.addEventListener(
+  "resize",
+  resizeCanvas
 );
 
+resizeCanvas();
+
+
+function createFirework(){
+
+  const x=
+    Math.random()*
+    canvas.width;
+
+  const y=
+    Math.random()*
+    canvas.height*
+    .55+
+    canvas.height*.12;
+
+
+  for(let i=0;i<55;i++){
+
+    const angle=
+      Math.random()*
+      Math.PI*2;
+
+    const speed=
+      Math.random()*5+2;
+
+
+    particles.push({
+
+      x:x,
+
+      y:y,
+
+      vx:Math.cos(angle)*speed,
+
+      vy:Math.sin(angle)*speed,
+
+      life:80+Math.random()*35,
+
+      maxLife:115,
+
+      size:Math.random()*3+1
+
+    });
+
+  }
+
 }
 
 
-function showCelebrate(title,text){
+function drawFireworks(){
 
-document.getElementById(
-
-"celebrateTitle"
-
-).textContent=title;
+  if(!fireworksRunning)
+    return;
 
 
-document.getElementById(
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
 
-"celebrateText"
 
-).textContent=text;
+  if(Math.random()<.08){
+
+    createFirework();
+
+  }
 
 
-document.getElementById(
+  particles=
+    particles.filter(p=>{
 
-"celebrate"
+      p.x+=p.vx;
 
-).classList.add("show");
+      p.y+=p.vy;
+
+      p.vy+=.045;
+
+      p.vx*=.99;
+
+      p.life--;
+
+
+      const alpha=
+        Math.max(
+          0,
+          p.life/p.maxLife
+        );
+
+
+      ctx.globalAlpha=alpha;
+
+      ctx.fillStyle=
+        "hsl("+
+        Math.random()*360+
+        ",100%,65%)";
+
+
+      ctx.beginPath();
+
+      ctx.arc(
+        p.x,
+        p.y,
+        p.size,
+        0,
+        Math.PI*2
+      );
+
+      ctx.fill();
+
+
+      return p.life>0;
+
+    });
+
+
+  ctx.globalAlpha=1;
+
+  requestAnimationFrame(
+    drawFireworks
+  );
 
 }
 
 
-function closeCelebrate(){
+function startFireworks(){
 
-document.getElementById(
+  fireworksRunning=true;
 
-"celebrate"
+  particles=[];
 
-).classList.remove("show");
+  for(let i=0;i<4;i++){
+
+    setTimeout(
+      createFirework,
+      i*250
+    );
+
+  }
+
+  drawFireworks();
 
 }
 
 
+function stopFireworks(){
+
+  fireworksRunning=false;
+
+  particles=[];
+
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+}
+
+
+/* 초기화 */
+
 document.getElementById(
-
-"breed"
-
+  "breed"
 ).onclick=breedOnce;
 
 
 document.getElementById(
-
-"auto"
-
+  "auto"
 ).onclick=toggleAuto;
 
 
 document.getElementById(
-
-"reset"
-
+  "reset"
 ).onclick=()=>{
 
-if(confirm("정말 게임을 초기화할까요?")){
+  if(
+    confirm(
+      "정말 게임을 초기화할까요?"
+    )
+  ){
 
-location.reload();
+    location.reload();
 
-}
+  }
 
 };
 
 
+/* 시작 */
+
 addLog(
-
-"🎮 게임 시작! 시작 완두콩 2마리가 준비되었습니다."
-
+  "🎮 게임 시작! 시작 완두콩 2마리가 준비되었습니다."
 );
-
 
 render();
 
