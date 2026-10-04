@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌱 완두콩 유전 교배 게임</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#eef8ee;
+color:#18351d;
+}
+
+header{
+background:#2f8f46;
+color:white;
+padding:25px 15px;
+text-align:center;
+}
+
+header h1{margin:0 0 8px}
+
+main{
+max-width:1100px;
+margin:auto;
+padding:15px;
+}
+
+.panel{
+background:white;
+border-radius:16px;
+padding:16px;
+margin-bottom:16px;
+box-shadow:0 4px 15px #0002;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+}
+
+.stat{
+background:#f2faf3;
+border-radius:12px;
+padding:12px;
+text-align:center;
+}
+
+.stat b{
+display:block;
+font-size:22px;
+margin-top:5px;
+}
+
+button{
+border:0;
+border-radius:9px;
+padding:10px 13px;
+cursor:pointer;
+font-weight:bold;
+margin:3px;
+}
+
+#breed{
+background:#3c9d50;
+color:white;
+font-size:16px;
+}
+
+#auto{
+background:#ffb52e;
+}
+
+#reset{
+background:#e85b5b;
+color:white;
+}
+
+.parents{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+margin:10px 0;
+}
+
+.pill{
+background:#e7f5e9;
+padding:8px 12px;
+border-radius:20px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+gap:12px;
+}
+
+.card{
+border:2px solid #e0ebe1;
+border-radius:14px;
+padding:14px;
+background:white;
+}
+
+.card.selected{
+border-color:#42a858;
+background:#f3fff4;
+}
+
+.card.locked{
+opacity:.7;
+}
+
+.name{
+font-weight:bold;
+font-size:17px;
+}
+
+.rarity{
+font-size:13px;
+margin:5px 0 10px;
+}
+
+.genes{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:5px;
+}
+
+.gene{
+background:#f0f6f1;
+padding:6px;
+border-radius:7px;
+text-align:center;
+font-weight:bold;
+}
+
+.phen{
+font-size:13px;
+line-height:1.5;
+margin:10px 0;
+}
+
+.log{
+background:#17231a;
+color:#d8f7dd;
+border-radius:10px;
+padding:10px;
+max-height:180px;
+overflow:auto;
+font-family:monospace;
+font-size:13px;
+}
+
+.codex-row{
+padding:8px;
+border-bottom:1px solid #e5eee6;
+}
+
+.celebrate{
+position:fixed;
+inset:0;
+background:#0009;
+display:none;
+place-items:center;
+z-index:10;
+}
+
+.celebrate.show{
+display:grid;
+}
+
+.celebrate-box{
+background:white;
+padding:30px;
+border-radius:22px;
+text-align:center;
+max-width:420px;
+margin:20px;
+}
+
+.celebrate-box h2{
+font-size:28px;
+}
+
+.celebrate-box button{
+background:#2f8f46;
+color:white;
+}
+
+@media(max-width:800px){
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+.stats .stat:last-child{
+grid-column:span 2;
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🌱 완두콩 유전 교배 게임</h1>
+<p>멘델의 7가지 형질을 교배해서 희귀한 완두콩을 만들어보세요!</p>
+</header>
+
+<main>
+
+<div class="panel">
+
+<div class="stats">
+
+<div class="stat">
+보유 완두콩
+<b id="owned">0</b>
+</div>
+
+<div class="stat">
+총 교배
+<b id="total">0</b>
+</div>
+
+<div class="stat">
+다음 교배
+<b id="cooldown">가능</b>
+</div>
+
+<div class="stat">
+7개 완전 열성
+<b id="perfect">0</b>
+</div>
+
+<div class="stat">
+6개 열성
+<b id="six">0</b>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>🧬 교배</h2>
+
+<div id="parents" class="parents">
+<span>부모 2마리를 선택해주세요.</span>
+</div>
+
+<button id="breed">🌱 교배하기</button>
+
+<button id="auto">▶️ 자동 교배</button>
+
+<button id="reset">🔄 게임 초기화</button>
+
+<p>
+※ 테스트를 위해 교배 쿨타임은 <b>1초</b>입니다.
+</p>
+
+</div>
+
+
+<div class="panel">
+
+<h2>📚 도감</h2>
+
+<p>
+처음 얻은 유전자 조합은 자동으로 도감에 등록됩니다.
+</p>
+
+<div id="codex"></div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>🌿 내 완두콩</h2>
+
+<div id="collection" class="grid"></div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>📜 기록</h2>
+
+<div id="log" class="log"></div>
+
+</div>
+
+</main>
+
+
+<div id="celebrate" class="celebrate">
+
+<div class="celebrate-box">
+
+<h2 id="celebrateTitle"></h2>
+
+<p id="celebrateText"></p>
+
+<button onclick="closeCelebrate()">
+확인
+</button>
+
+</div>
+
+</div>
+
+
+<script>
+
+const loci=[
+
+{
+key:"R",
+dom:"둥근 씨앗",
+rec:"주름진 씨앗"
+},
+
+{
+key:"Y",
+dom:"노란 씨앗",
+rec:"초록 씨앗"
+},
+
+{
+key:"P",
+dom:"보라색 꽃",
+rec:"흰색 꽃"
+},
+
+{
+key:"I",
+dom:"부푼 꼬투리",
+rec:"잘록한 꼬투리"
+},
+
+{
+key:"G",
+dom:"초록 꼬투리",
+rec:"노란 꼬투리"
+},
+
+{
+key:"A",
+dom:"겨드랑이 꽃",
+rec:"끝 꽃"
+},
+
+{
+key:"T",
+dom:"키 큰 줄기",
+rec:"짧은 줄기"
+}
+
+];
+
+
+const starter=[
+"Rr",
+"Yy",
+"Pp",
+"Ii",
+"Gg",
+"Aa",
+"Tt"
+];
+
+
+let idSeq=2;
+
+let peas=[
+makePea(
+"🌱 시작 완두콩 A",
+starter
+),
+
+makePea(
+"🌱 시작 완두콩 B",
+starter
+)
+];
+
+
+let selected=[];
+
+let total=0;
+
+let perfect=0;
+
+let sixCount=0;
+
+let codex=new Set();
+
+let auto=false;
+
+let cooldownUntil=0;
+
+
+function makePea(name,genes){
+
+return{
+
+id:++idSeq,
+
+name:name,
+
+genes:[...genes],
+
+fav:false,
+
+locked:false
+
+};
+
+}
+
+
+function keyOf(pea){
+
+return pea.genes.join(" / ");
+
+}
+
+
+function recessiveCount(genes){
+
+return genes.filter(
+
+g =>
+
+g[0]===g[1] &&
+
+g[0]===g[0].toLowerCase()
+
+).length;
+
+}
+
+
+function phenotype(genes){
+
+return genes.map(
+
+(g,i)=>
+
+g[0]===g[1] &&
+
+g[0]===g[0].toLowerCase()
+
+?loci[i].rec
+
+:loci[i].dom
+
+);
+
+}
+
+
+function rarity(genes){
+
+const n=recessiveCount(genes);
+
+if(n===7)return "🌟🌟🌟 전설";
+
+if(n===6)return "🌟🌟 특별";
+
+if(n>=4)return "💎 초희귀";
+
+if(n>=2)return "✨ 희귀";
+
+return "🌱 일반";
+
+}
+
+
+function addLog(text){
+
+const log=document.getElementById("log");
+
+const div=document.createElement("div");
+
+div.textContent="• "+text;
+
+log.prepend(div);
+
+}
+
+
+function register(pea){
+
+const key=keyOf(pea);
+
+if(!codex.has(key)){
+
+codex.add(key);
+
+addLog("📖 새로운 유전자 조합 발견!");
+
+}
+
+}
+
+
+peas.forEach(register);
+
+
+function render(){
+
+document.getElementById("owned").textContent=peas.length;
+
+document.getElementById("total").textContent=total;
+
+document.getElementById("perfect").textContent=perfect;
+
+document.getElementById("six").textContent=sixCount;
+
+updateCooldown();
+
+renderParents();
+
+renderCodex();
+
+renderCollection();
+
+}
+
+
+function renderParents(){
+
+const el=document.getElementById("parents");
+
+el.innerHTML="";
+
+if(selected.length===0){
+
+el.innerHTML="<span>부모 2마리를 선택해주세요.</span>";
+
+return;
+
+}
+
+selected.forEach(id=>{
+
+const pea=peas.find(p=>p.id===id);
+
+if(pea){
+
+const span=document.createElement("span");
+
+span.className="pill";
+
+span.textContent=pea.name;
+
+el.appendChild(span);
+
+}
+
+});
+
+}
+
+
+function renderCodex(){
+
+const el=document.getElementById("codex");
+
+el.innerHTML="";
+
+[...codex].forEach((key,index)=>{
+
+const div=document.createElement("div");
+
+div.className="codex-row";
+
+div.textContent="#"+(index+1)+"  "+key;
+
+el.appendChild(div);
+
+});
+
+}
+
+
+function renderCollection(){
+
+const el=document.getElementById("collection");
+
+el.innerHTML="";
+
+
+peas.slice().reverse().forEach(pea=>{
+
+const card=document.createElement("div");
+
+card.className="card"+
+
+(selected.includes(pea.id)?" selected":"")+
+
+(pea.locked?" locked":"");
+
+
+const genes=pea.genes.map(
+
+g=>`<span class="gene">${g}</span>`
+
+).join("");
+
+
+const phen=phenotype(pea.genes)
+
+.map(
+
+(x,i)=>loci[i].key+": "+x
+
+)
+
+.join("<br>");
+
+
+card.innerHTML=`
+
+<div class="name">
+
+${pea.name}
+
+${pea.fav?" ⭐":""}
+
+${pea.locked?" 🔒":""}
+
+</div>
+
+<div class="rarity">
+
+${rarity(pea.genes)}
+
+</div>
+
+<div class="genes">
+
+${genes}
+
+</div>
+
+<div class="phen">
+
+${phen}
+
+</div>
+
+<button class="select">
+
+${selected.includes(pea.id)?"선택 해제":"부모 선택"}
+
+</button>
+
+<button class="fav">
+
+${pea.fav?"⭐ 즐겨찾기 해제":"⭐ 즐겨찾기"}
+
+</button>
+
+<button class="lock">
+
+${pea.locked?"🔓 잠금 해제":"🔒 잠금"}
+
+</button>
+
+`;
+
+
+card.querySelector(".select").onclick=()=>{
+
+toggleSelect(pea.id);
+
+};
+
+
+card.querySelector(".fav").onclick=()=>{
+
+pea.fav=!pea.fav;
+
+render();
+
+};
+
+
+card.querySelector(".lock").onclick=()=>{
+
+pea.locked=!pea.locked;
+
+if(pea.locked){
+
+selected=selected.filter(
+
+id=>id!==pea.id
+
+);
+
+}
+
+render();
+
+};
+
+
+el.appendChild(card);
+
+});
+
+}
+
+
+function toggleSelect(id){
+
+const pea=peas.find(p=>p.id===id);
+
+if(!pea || pea.locked)return;
+
+
+if(selected.includes(id)){
+
+selected=selected.filter(x=>x!==id);
+
+}
+
+else{
+
+if(selected.length>=2){
+
+selected.shift();
+
+}
+
+selected.push(id);
+
+}
+
+render();
+
+}
+
+
+function getCooldown(){
+
+return Math.max(
+
+0,
+
+cooldownUntil-Date.now()
+
+);
+
+}
+
+
+function updateCooldown(){
+
+const el=document.getElementById("cooldown");
+
+const ms=getCooldown();
+
+el.textContent=
+
+ms>0
+
+?((ms/1000).toFixed(1)+"초")
+
+:"가능";
+
+
+document.getElementById("breed").disabled=
+
+ms>0;
+
+
+if(ms>0){
+
+setTimeout(updateCooldown,100);
+
+}
+
+}
+
+
+function breedOnce(){
+
+if(getCooldown()>0){
+
+return false;
+
+}
+
+
+if(selected.length!==2){
+
+addLog("⚠️ 부모 2마리를 선택해주세요.");
+
+return false;
+
+}
+
+
+const parentA=
+
+peas.find(p=>p.id===selected[0]);
+
+const parentB=
+
+peas.find(p=>p.id===selected[1]);
+
+
+if(
+
+!parentA||
+
+!parentB||
+
+parentA.locked||
+
+parentB.locked
+
+){
+
+addLog("⚠️ 잠긴 완두콩은 교배할 수 없습니다.");
+
+return false;
+
+}
+
+
+const genes=loci.map((_,i)=>{
+
+const alleleA=
+
+parentA.genes[i][
+
+Math.floor(Math.random()*2)
+
+];
+
+
+const alleleB=
+
+parentB.genes[i][
+
+Math.floor(Math.random()*2)
+
+];
+
+
+return [alleleA,alleleB]
+
+.sort((a,b)=>{
+
+if(a===a.toUpperCase())return -1;
+
+if(b===b.toUpperCase())return 1;
+
+return 0;
+
+})
+
+.join("");
+
+});
+
+
+const pea=makePea(
+
+"🌱 교배 완두콩 #"+(peas.length-1),
+
+genes
+
+);
+
+
+peas.push(pea);
+
+total++;
+
+cooldownUntil=Date.now()+1000;
+
+register(pea);
+
+
+const recessive=recessiveCount(genes);
+
+
+if(recessive===7){
+
+perfect++;
+
+showCelebrate(
+
+"🎉🎉🎉 전설의 완두콩 탄생!",
+
+"7개 형질이 모두 완전 열성입니다! rr yy pp ii gg aa tt"
+
+);
+
+}
+
+
+else if(recessive===6){
+
+sixCount++;
+
+showCelebrate(
+
+"🎉 특별한 완두콩!",
+
+"7개 중 6개 형질이 열성입니다!"
+
+);
+
+}
+
+
+addLog(
+
+"🌱 새로운 완두콩 생성! 열성 형질 "+
+
+recessive+
+
+"/7"
+
+);
+
+
+render();
+
+return true;
+
+}
+
+
+function toggleAuto(){
+
+auto=!auto;
+
+const button=document.getElementById("auto");
+
+button.textContent=
+
+auto
+
+?"⏹️ 자동 교배 중"
+
+:"▶️ 자동 교배";
+
+
+if(auto){
+
+autoLoop();
+
+}
+
+}
+
+
+function autoLoop(){
+
+if(!auto)return;
+
+breedOnce();
+
+setTimeout(
+
+autoLoop,
+
+1050
+
+);
+
+}
+
+
+function showCelebrate(title,text){
+
+document.getElementById(
+
+"celebrateTitle"
+
+).textContent=title;
+
+
+document.getElementById(
+
+"celebrateText"
+
+).textContent=text;
+
+
+document.getElementById(
+
+"celebrate"
+
+).classList.add("show");
+
+}
+
+
+function closeCelebrate(){
+
+document.getElementById(
+
+"celebrate"
+
+).classList.remove("show");
+
+}
+
+
+document.getElementById(
+
+"breed"
+
+).onclick=breedOnce;
+
+
+document.getElementById(
+
+"auto"
+
+).onclick=toggleAuto;
+
+
+document.getElementById(
+
+"reset"
+
+).onclick=()=>{
+
+if(confirm("정말 게임을 초기화할까요?")){
+
+location.reload();
+
+}
+
+};
+
+
+addLog(
+
+"🎮 게임 시작! 시작 완두콩 2마리가 준비되었습니다."
+
+);
+
+
+render();
+
+</script>
+
+</body>
+</html>
