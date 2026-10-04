@@ -1,1430 +1,198 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>완두콩 유전 교배 게임</title>
-
 <style>
-*{
-  box-sizing:border-box;
-}
-
-body{
-  margin:0;
-  font-family:Arial,"Noto Sans KR",sans-serif;
-  background:linear-gradient(135deg,#e8f8ed,#f7fff9);
-  color:#183b25;
-}
-
-header{
-  background:linear-gradient(135deg,#2f9e55,#19733b);
-  color:white;
-  padding:25px 15px;
-  text-align:center;
-  box-shadow:0 4px 15px #0002;
-}
-
-header h1{
-  margin:0 0 8px;
-  font-size:clamp(25px,6vw,40px);
-}
-
-header p{
-  margin:0;
-  opacity:.9;
-}
-
-.container{
-  width:min(1100px,94%);
-  margin:20px auto 50px;
-}
-
-.panel{
-  background:white;
-  border-radius:18px;
-  padding:20px;
-  margin-bottom:18px;
-  box-shadow:0 4px 18px #0001;
-}
-
-.panel h2{
-  margin-top:0;
-}
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-}
-
-.stat{
-  background:#f0faf3;
-  border-radius:14px;
-  padding:15px;
-  text-align:center;
-}
-
-.stat b{
-  display:block;
-  font-size:27px;
-  color:#238b45;
-  margin-top:5px;
-}
-
-.timerBox{
-  text-align:center;
-  background:linear-gradient(135deg,#f4fff6,#e5f8eb);
-}
-
-#timer{
-  font-family:monospace;
-  font-size:clamp(42px,10vw,70px);
-  font-weight:900;
-  letter-spacing:2px;
-  color:#218838;
-}
-
-#timer.running{
-  color:#e67700;
-}
-
-#timer.finished{
-  color:#198754;
-}
-
-#timerStatus{
-  font-weight:bold;
-}
-
-.stageBadge{
-  display:inline-block;
-  padding:8px 15px;
-  border-radius:999px;
-  background:#d3f9d8;
-  color:#176b35;
-  font-weight:900;
-  margin-bottom:10px;
-}
-
-.peas{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:15px;
-}
-
-.pea{
-  border:3px solid #d8eee0;
-  border-radius:18px;
-  padding:17px;
-  background:#fbfffc;
-  transition:.15s;
-}
-
-.pea.selected{
-  border-color:#2f9e55;
-  background:#effbf2;
-  transform:translateY(-3px);
-  box-shadow:0 5px 15px #2f9e5530;
-}
-
-.pea h3{
-  margin:0 0 10px;
-  font-size:18px;
-}
-
-.emoji{
-  font-size:48px;
-  text-align:center;
-  margin:5px;
-}
-
-.genes{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px;
-  margin-top:12px;
-}
-
-.gene{
-  background:#f2f5f3;
-  border-radius:8px;
-  padding:7px;
-  font-size:13px;
-}
-
-.recessive{
-  background:#d8f5df;
-  color:#176b35;
-  font-weight:bold;
-}
-
-button{
-  border:0;
-  border-radius:12px;
-  padding:12px 18px;
-  font-size:15px;
-  font-weight:bold;
-  cursor:pointer;
-  background:#2f9e55;
-  color:white;
-  transition:.15s;
-}
-
-button:hover{
-  transform:translateY(-1px);
-  filter:brightness(1.05);
-}
-
-button:disabled{
-  background:#adb5bd;
-  cursor:not-allowed;
-  transform:none;
-}
-
-.actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:15px;
-}
-
-.breedButton{
-  width:100%;
-  font-size:20px;
-  padding:17px;
-  margin-top:15px;
-  background:#1971c2;
-}
-
-.nextStage{
-  text-align:center;
-  background:linear-gradient(135deg,#fff8df,#fff3bf);
-  border:3px solid #ffd43b;
-}
-
-.nextStage button{
-  background:#e67700;
-  font-size:20px;
-  padding:16px 30px;
-}
-
-.log{
-  max-height:220px;
-  overflow:auto;
-  background:#102018;
-  color:#d3f9d8;
-  padding:15px;
-  border-radius:12px;
-  font-family:monospace;
-  font-size:13px;
-}
-
-.log div{
-  margin-bottom:5px;
-}
-
-.celebrate{
-  position:fixed;
-  inset:0;
-  background:#0009;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:1000;
-  padding:20px;
-}
-
-.celebrate.show{
-  display:flex;
-}
-
-.celebrateBox{
-  width:min(500px,95%);
-  background:white;
-  border-radius:25px;
-  padding:30px;
-  text-align:center;
-  box-shadow:0 15px 60px #0006;
-  animation:pop .35s ease;
-}
-
-.celebrateBox .big{
-  font-size:80px;
-}
-
-.celebrateBox h2{
-  color:#198754;
-}
-
-@keyframes pop{
-  from{
-    transform:scale(.7);
-    opacity:0;
-  }
-  to{
-    transform:scale(1);
-    opacity:1;
-  }
-}
-
-.firework{
-  position:fixed;
-  font-size:30px;
-  animation:fly 1.5s ease-out forwards;
-  pointer-events:none;
-  z-index:1100;
-}
-
-@keyframes fly{
-  0%{
-    transform:translateY(0) scale(.5);
-    opacity:1;
-  }
-  100%{
-    transform:translateY(-300px) scale(1.5);
-    opacity:0;
-  }
-}
-
-.hidden{
-  display:none;
-}
-
-@media(max-width:650px){
-  .stats{
-    grid-template-columns:repeat(2,1fr);
-  }
-
-  .genes{
-    grid-template-columns:1fr;
-  }
-}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#edf8ef;color:#17351d}
+header{background:linear-gradient(135deg,#238b45,#48b967);color:white;text-align:center;padding:25px}
+main{max-width:1100px;margin:auto;padding:15px}.panel{background:white;border-radius:18px;padding:18px;margin:15px 0;box-shadow:0 4px 16px #0002}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.stat{text-align:center;background:#f1faf2;padding:12px;border-radius:12px}.stat b{display:block;font-size:22px;margin-top:5px}
+button{border:0;border-radius:9px;padding:10px 13px;margin:3px;font-weight:bold;cursor:pointer}button:disabled{opacity:.5}
+#breed{background:#349d4e;color:white}#auto{background:#ffb52e}#reset{background:#e85b5b;color:white}
+.parents{display:grid;grid-template-columns:1fr 1fr;gap:10px}.parent{padding:12px;border:2px dashed #b9d9bf;border-radius:12px}.parent.active{border:3px solid #29a84b;background:#eaffee}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:13px}.card{position:relative;border:2px solid #dce8de;border-radius:15px;padding:14px;background:#fff}.card.selected{border:4px solid #22a848;background:#edfff1;box-shadow:0 0 0 4px #8be49d88}.card.locked{opacity:.6}.badge{position:absolute;right:9px;top:9px;background:#22a848;color:#fff;border-radius:20px;padding:5px 9px;font-size:12px}
+.name{font-weight:900;font-size:18px;padding-right:85px}.genes{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:8px 0}.gene{padding:7px 4px;text-align:center;background:#eef5ef;border-radius:7px;font-weight:900}.gene.rec{background:#f3d9ff;color:#86257e;border:2px solid #d86bc7}.rarity{display:inline-block;padding:5px 9px;border-radius:20px;font-weight:900;font-size:13px}.common{background:#e8f3e9;color:#48704f}.rare{background:#e6f0ff;color:#2764ad}.super{background:#f1e7ff;color:#7041a8}.special{background:#fff0bd;color:#a66a00}.legend{background:#ffe88a;color:#815500;box-shadow:0 0 12px #ffd83d}
+.card.perfect{border-color:#e0b52b;background:#fffdf1}.card.six{border-color:#a86dd0}.recText{color:#9b268d;font-weight:900}.phen{font-size:13px;line-height:1.55;background:#f7faf7;padding:9px;border-radius:8px;margin:9px 0}
+#born{display:none;border:3px solid #83cf94;background:#effff2}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:9px;border-bottom:1px solid #ddd;text-align:center}.me{background:#eaffee;font-weight:bold}
+.log{background:#17231a;color:#d8f7dd;border-radius:10px;padding:10px;max-height:180px;overflow:auto;font-family:monospace}
+#gate,#celebrate{position:fixed;inset:0;background:#000b;display:grid;place-items:center;z-index:50}#celebrate{display:none}.box{background:white;border-radius:22px;padding:28px;width:min(460px,calc(100% - 30px));text-align:center}.box input{width:100%;padding:12px;border:2px solid #cfe3d3;border-radius:10px;font-size:17px;margin:10px 0}.box button{background:#2f994b;color:white;width:100%}
+#fireworks{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.stats .stat:last-child{grid-column:span 2}.parents{grid-template-columns:1fr}}
 </style>
 </head>
-
 <body>
 
-<header>
-  <h1>🌱 완두콩 유전 교배 게임</h1>
-  <p>유전자를 조합해서 모든 열성 형질을 가진 콩을 만들어라!</p>
-</header>
-
-<div class="container">
-
-  <!-- 현재 스테이지 -->
-  <div class="panel" style="text-align:center">
-    <div class="stageBadge" id="stageBadge">
-      🌱 STAGE 1 · 완두콩
-    </div>
-    <h2 id="stageTitle">완두콩 유전 교배</h2>
-    <p id="stageDescription">
-      7개의 형질을 모두 열성으로 만들어 보세요.
-    </p>
-  </div>
-
-  <!-- 타이머 -->
-  <div class="panel timerBox">
-    <h2>⏱️ 스피드런</h2>
-
-    <div id="timer">00:00.00</div>
-
-    <p id="timerStatus">
-      첫 교배를 하면 타이머가 시작됩니다!
-    </p>
-
-    <p>
-      🏆 최고 기록:
-      <b id="bestTime">기록 없음</b>
-    </p>
-  </div>
-
-  <!-- 스탯 -->
-  <div class="panel">
-    <div class="stats">
-
-      <div class="stat">
-        현재 스테이지
-        <b id="stageNumber">1 / 2</b>
-      </div>
-
-      <div class="stat">
-        교배 횟수
-        <b id="total">0</b>
-      </div>
-
-      <div class="stat">
-        선택된 부모
-        <b id="selected">0 / 2</b>
-      </div>
-
-      <div class="stat">
-        완성 횟수
-        <b id="perfect">0</b>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- 콩 목록 -->
-  <div class="panel">
-    <h2 id="collectionTitle">🌱 완두콩 목록</h2>
-    <p>
-      부모가 될 콩을 <b>2마리</b> 선택하세요.
-    </p>
-
-    <div class="peas" id="peas"></div>
-
-    <button class="breedButton" id="breed">
-      🧬 교배하기
-    </button>
-
-    <div class="actions">
-      <button id="auto">
-        ▶️ 자동 교배
-      </button>
-
-      <button id="reset">
-        🔄 새 게임
-      </button>
-    </div>
-  </div>
-
-  <!-- 로그 -->
-  <div class="panel">
-    <h2>📜 기록</h2>
-    <div class="log" id="log"></div>
-  </div>
-
-  <!-- 다음 스테이지 -->
-  <div class="panel nextStage hidden" id="nextStagePanel">
-    <h2>🎉 1스테이지 클리어!</h2>
-
-    <p>
-      모든 7개 형질이 열성인 완두콩을 만들었습니다.
-    </p>
-
-    <p>
-      이제 더 어려운 <b>강낭콩 9유전자</b>에 도전하세요!
-    </p>
-
-    <button id="nextStage">
-      🫘 다음 스테이지 · 강낭콩
-    </button>
-  </div>
-
-  <!-- 최종 결과 -->
-  <div class="panel nextStage hidden" id="finalPanel">
-    <h2>🏆 모든 스테이지 클리어!</h2>
-
-    <div style="font-size:65px">🌱➡️🫘</div>
-
-    <h2 id="finalTime">00:00.00</h2>
-
-    <p>
-      완두콩 7개 + 강낭콩 9개<br>
-      총 <b>16개 열성 형질</b>을 모두 완성했습니다!
-    </p>
-
-    <button id="restartFinal">
-      🔄 다시 도전
-    </button>
-  </div>
-
-</div>
-
-<!-- 축하창 -->
-<div class="celebrate" id="celebrate">
-  <div class="celebrateBox">
-
-    <div class="big" id="celebrateEmoji">
-      🎉
-    </div>
-
-    <h2 id="celebrateTitle">
-      전설의 콩 탄생!
-    </h2>
-
-    <p id="celebrateText"></p>
-
-    <button id="closeCelebrate">
-      확인
-    </button>
-
-  </div>
-</div>
-
-<script>
-
-/* =========================================================
-   게임 데이터
-========================================================= */
-
-const peaLoci = [
-  {key:"R", dom:"둥근 씨앗", rec:"주름진 씨앗"},
-  {key:"Y", dom:"노란 씨앗", rec:"초록 씨앗"},
-  {key:"P", dom:"보라색 꽃", rec:"흰색 꽃"},
-  {key:"I", dom:"부푼 꼬투리", rec:"잘록한 꼬투리"},
-  {key:"G", dom:"초록 꼬투리", rec:"노란 꼬투리"},
-  {key:"A", dom:"겨드랑이 꽃", rec:"끝 꽃"},
-  {key:"T", dom:"키 큰 줄기", rec:"짧은 줄기"}
-];
-
-const beanLoci = [
-  {key:"S", dom:"큰 씨앗", rec:"작은 씨앗"},
-  {key:"L", dom:"긴 꼬투리", rec:"짧은 꼬투리"},
-  {key:"P", dom:"곧은 꼬투리", rec:"굽은 꼬투리"},
-  {key:"C", dom:"색 있는 씨앗", rec:"흰 씨앗"},
-  {key:"T", dom:"덩굴형", rec:"직립형"},
-  {key:"F", dom:"매끈한 꼬투리", rec:"주름진 꼬투리"},
-  {key:"B", dom:"가지 많음", rec:"가지 적음"},
-  {key:"W", dom:"넓은 꼬투리", rec:"좁은 꼬투리"},
-  {key:"H", dom:"높은 줄기", rec:"낮은 줄기"}
-];
-
-const peaStarter = [
-  "Rr","Yy","Pp","Ii","Gg","Aa","Tt"
-];
-
-const beanStarter = [
-  "Ss","Ll","Pp","Cc","Tt","Ff","Bb","Ww","Hh"
-];
-
-
-/* =========================================================
-   게임 상태
-========================================================= */
-
-let stage = 1;
-
-let idSeq = 1;
-
-let peas = [];
-
-let beans = [];
-
-let selected = [];
-
-let total = 0;
-
-let perfect = 0;
-
-let auto = false;
-
-let cooldownUntil = 0;
-
-
-/* =========================================================
-   타이머
-========================================================= */
-
-let timerRunning = false;
-
-let timerFinished = false;
-
-let timerStart = 0;
-
-let timerInterval = null;
-
-let bestTime =
-  Number(localStorage.getItem("peaBeanBestTime")) || null;
-
-
-/* =========================================================
-   DOM
-========================================================= */
-
-const $ = id => document.getElementById(id);
-
-
-/* =========================================================
-   시간 함수
-========================================================= */
-
-function formatTime(ms){
-
-  if(ms === null || !Number.isFinite(ms)){
-    return "00:00.00";
-  }
-
-  ms = Math.max(0,Math.round(ms));
-
-  const totalSeconds =
-    Math.floor(ms / 1000);
-
-  const minutes =
-    Math.floor(totalSeconds / 60);
-
-  const seconds =
-    totalSeconds % 60;
-
-  const centiseconds =
-    Math.floor((ms % 1000) / 10);
-
-  return (
-    String(minutes).padStart(2,"0")
-    + ":" +
-    String(seconds).padStart(2,"0")
-    + "." +
-    String(centiseconds).padStart(2,"0")
-  );
-}
-
-
-function updateTimer(){
-
-  if(!timerRunning) return;
-
-  const elapsed =
-    performance.now() - timerStart;
-
-  $("timer").textContent =
-    formatTime(elapsed);
-}
-
-
-function startTimer(){
-
-  if(timerRunning || timerFinished){
-    return;
-  }
-
-  timerRunning = true;
-
-  timerStart = performance.now();
-
-  $("timer").classList.add("running");
-
-  $("timer").classList.remove("finished");
-
-  $("timerStatus").textContent =
-    "🔥 전체 스피드런 진행 중!";
-
-  clearInterval(timerInterval);
-
-  timerInterval =
-    setInterval(updateTimer,10);
-}
-
-
-function stopTimer(){
-
-  if(!timerRunning){
-    return null;
-  }
-
-  const elapsed =
-    Math.round(performance.now() - timerStart);
-
-  timerRunning = false;
-
-  timerFinished = true;
-
-  clearInterval(timerInterval);
-
-  timerInterval = null;
-
-  $("timer").textContent =
-    formatTime(elapsed);
-
-  $("timer").classList.remove("running");
-
-  $("timer").classList.add("finished");
-
-  $("timerStatus").textContent =
-    "🏆 최종 스피드런 완료!";
-
-  if(
-    bestTime === null ||
-    elapsed < bestTime
-  ){
-
-    bestTime = elapsed;
-
-    localStorage.setItem(
-      "peaBeanBestTime",
-      String(bestTime)
-    );
-
-    $("bestTime").textContent =
-      formatTime(bestTime) + " 🎉";
-
-    log(
-      "🏆 새로운 최고 기록! " +
-      formatTime(bestTime)
-    );
-
-  }
-
-  return elapsed;
-}
-
-
-function renderBestTime(){
-
-  $("bestTime").textContent =
-    bestTime === null
-      ? "기록 없음"
-      : formatTime(bestTime);
-}
-
-
-/* =========================================================
-   콩 생성
-========================================================= */
-
-function makeBean(name, genes){
-
-  return {
-    id:idSeq++,
-    name,
-    genes:[...genes]
-  };
-
-}
-
-
-function currentLoci(){
-
-  return stage === 1
-    ? peaLoci
-    : beanLoci;
-
-}
-
-
-function currentBeans(){
-
-  return stage === 1
-    ? peas
-    : beans;
-
-}
-
-
-/* =========================================================
-   유전자 계산
-========================================================= */
-
-function recessiveCount(bean){
-
-  return bean.genes.filter(
-    g => g === g.toLowerCase()
-  ).length;
-
-}
-
-
-function isPerfect(bean){
-
-  return recessiveCount(bean) === currentLoci().length;
-
-}
-
-
-/* =========================================================
-   초기화
-========================================================= */
-
-function initGame(){
-
-  stage = 1;
-
-  idSeq = 1;
-
-  peas = [
-    makeBean(
-      "🌱 시작 완두콩 A",
-      peaStarter
-    ),
-    makeBean(
-      "🌱 시작 완두콩 B",
-      peaStarter
-    )
-  ];
-
-  beans = [];
-
-  selected = [];
-
-  total = 0;
-
-  perfect = 0;
-
-  auto = false;
-
-  cooldownUntil = 0;
-
-  timerRunning = false;
-
-  timerFinished = false;
-
-  timerStart = 0;
-
-  clearInterval(timerInterval);
-
-  timerInterval = null;
-
-  $("timer").textContent =
-    "00:00.00";
-
-  $("timer").className = "";
-
-  $("timerStatus").textContent =
-    "첫 교배를 하면 타이머가 시작됩니다!";
-
-  $("nextStagePanel")
-    .classList.add("hidden");
-
-  $("finalPanel")
-    .classList.add("hidden");
-
-  $("auto").textContent =
-    "▶️ 자동 교배";
-
-  renderBestTime();
-
-  updateStageUI();
-
-  render();
-
-  log("🌱 완두콩 스테이지를 시작했습니다.");
-
-}
-
-
-/* =========================================================
-   스테이지 UI
-========================================================= */
-
-function updateStageUI(){
-
-  if(stage === 1){
-
-    $("stageBadge").textContent =
-      "🌱 STAGE 1 · 완두콩";
-
-    $("stageTitle").textContent =
-      "완두콩 유전 교배";
-
-    $("stageDescription").textContent =
-      "7개의 형질을 모두 열성으로 만들어 보세요.";
-
-    $("collectionTitle").textContent =
-      "🌱 완두콩 목록";
-
-  }else{
-
-    $("stageBadge").textContent =
-      "🫘 STAGE 2 · 강낭콩";
-
-    $("stageTitle").textContent =
-      "강낭콩 유전 교배";
-
-    $("stageDescription").textContent =
-      "9개의 형질을 모두 열성으로 만들어 보세요.";
-
-    $("collectionTitle").textContent =
-      "🫘 강낭콩 목록";
-
-  }
-
-  $("stageNumber").textContent =
-    stage + " / 2";
-
-}
-
-
-/* =========================================================
-   콩 카드
-========================================================= */
-
+<div id="gate"><div class="box">
+<h2>🌱 완두콩 유전 교배 게임</h2>
+<p>랭킹에 표시할 이름을 입력하세요.</p>
+<input id="nameInput" maxlength="12" placeholder="이름 (최대 12자)">
+<button id="start">게임 시작</button>
+</div></div>
+
+<header><h1>🌱 완두콩 유전 교배 게임</h1><p>멘델의 7가지 형질을 교배해 희귀한 완두콩을 만들어보세요!</p></header>
+
+<main>
+<div class="panel"><b>👤 플레이어: <span id="player">-</span></b> <button id="change">이름 변경</button></div>
+
+<div class="panel"><div class="stats">
+<div class="stat">보유 완두콩<b id="owned">0</b></div><div class="stat">총 교배<b id="total">0</b></div>
+<div class="stat">다음 교배<b id="cooldown">가능</b></div><div class="stat">7개 완전 열성<b id="perfect">0</b></div><div class="stat">6개 열성<b id="six">0</b></div>
+</div></div>
+
+<div class="panel"><h2>🧬 교배</h2><div id="parents" class="parents"></div>
+<button id="breed">🌱 교배하기</button><button id="auto">▶️ 자동 교배</button><button id="reset">🔄 초기화</button>
+<p>※ 교배 쿨타임 1초</p></div>
+
+<div class="panel" id="born"><h2>🎉 최근 탄생</h2><div id="bornContent"></div></div>
+
+<div class="panel"><h2>🏆 7열성 완두콩 랭킹</h2><p id="rankStatus">랭킹 준비 중...</p>
+<div style="overflow:auto"><table class="table"><thead><tr><th>순위</th><th>이름</th><th>성공 교배</th></tr></thead><tbody id="ranking"></tbody></table></div>
+<button id="refresh">🔄 새로고침</button></div>
+
+<div class="panel"><h2>📚 유전자 도감</h2><div id="codex"></div></div>
+<div class="panel"><h2>🌿 내 완두콩</h2><p>선택된 부모는 굵은 초록 테두리와 번호로 표시됩니다.</p><div id="collection" class="grid"></div></div>
+<div class="panel"><h2>📜 기록</h2><div id="log" class="log"></div></div>
+</main>
+
+<div id="celebrate"><canvas id="fireworks"></canvas><div class="box"><h2 id="ct"></h2><p id="cx"></p><p id="cg"></p><button onclick="closeCelebrate()">확인</button></div></div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import{getFirestore,collection,doc,getDoc,setDoc,query,orderBy,limit,getDocs}from"https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import{getAuth,signInAnonymously,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+/* 🔥 Firebase Console에서 받은 값을 여기에 넣으세요. */
+const firebaseConfig={
+ apiKey:"여기에_apiKey",
+ authDomain:"여기에_authDomain",
+ projectId:"여기에_projectId",
+ storageBucket:"여기에_storageBucket",
+ messagingSenderId:"여기에_messagingSenderId",
+ appId:"여기에_appId"
+};
+
+let db=null,auth=null,user=null,firebaseReady=false;
+const configured=!Object.values(firebaseConfig).some(v=>String(v).startsWith("여기에_"));
+if(configured){
+ try{
+  const app=initializeApp(firebaseConfig);db=getFirestore(app);auth=getAuth(app);
+  signInAnonymously(auth).catch(e=>setRank("Firebase 익명 로그인을 확인하세요."));
+  onAuthStateChanged(auth,u=>{user=u;if(u){firebaseReady=true;loadRanking()}});
+ }catch(e){console.error(e);setRank("Firebase 초기화 실패")}
+}else setRank("Firebase 설정값을 넣으면 공용 랭킹이 작동합니다.");
+
+const loci=[
+ {key:"R",dom:"둥근 씨앗",rec:"주름진 씨앗"},{key:"Y",dom:"노란 씨앗",rec:"초록 씨앗"},
+ {key:"P",dom:"보라색 꽃",rec:"흰색 꽃"},{key:"I",dom:"부푼 꼬투리",rec:"잘록한 꼬투리"},
+ {key:"G",dom:"초록 꼬투리",rec:"노란 꼬투리"},{key:"A",dom:"겨드랑이 꽃",rec:"끝 꽃"},
+ {key:"T",dom:"키 큰 줄기",rec:"짧은 줄기"}];
+const starter=["Rr","Yy","Pp","Ii","Gg","Aa","Tt"];
+let idSeq=2,peas=[makePea("🌱 시작 완두콩 A",starter),makePea("🌱 시작 완두콩 B",starter)];
+let selected=[],total=0,perfect=0,six=0,codex=new Set(),auto=false,cooldownUntil=0;
+let playerName=localStorage.getItem("peaPlayerName")||"";
+
+const $=id=>document.getElementById(id);
+function makePea(name,genes){return{id:++idSeq,name,genes:[...genes],fav:false,locked:false}}
+function recCount(gs){return gs.filter(g=>g[0]===g[1]&&g[0]===g[0].toLowerCase()).length}
+function phen(gs){return gs.map((g,i)=>g[0]===g[1]&&g[0]===g[0].toLowerCase()?loci[i].rec:loci[i].dom)}
+function key(p){return p.genes.join(" / ")}
+function rare(gs){let n=recCount(gs);if(n===7)return["🌟🌟🌟 전설","legend"];if(n===6)return["🌟🌟 특별","special"];if(n>=4)return["💎 초희귀","super"];if(n>=2)return["✨ 희귀","rare"];return["🌱 일반","common"]}
+function log(t){let d=document.createElement("div");d.textContent="• "+t;$("log").prepend(d)}
+function register(p){if(!codex.has(key(p))){codex.add(key(p));log("📖 새로운 유전자 조합 발견!")}}
+peas.forEach(register);
+
+function setRank(t){$("rankStatus").textContent=t}
 function render(){
-
-  const list = currentBeans();
-
-  const loci = currentLoci();
-
-  $("peas").innerHTML = "";
-
-  list.forEach(bean => {
-
-    const card =
-      document.createElement("div");
-
-    card.className = "pea";
-
-    if(selected.includes(bean.id)){
-      card.classList.add("selected");
-    }
-
-    const n =
-      recessiveCount(bean);
-
-    const perfectText =
-      n === loci.length
-        ? " 🏆 ALL RECESSIVE!"
-        : "";
-
-    let genesHTML = "";
-
-    loci.forEach((locus,index)=>{
-
-      const gene =
-        bean.genes[index];
-
-      const isRec =
-        gene === gene.toLowerCase();
-
-      genesHTML += `
-        <div class="gene ${isRec ? "recessive" : ""}">
-          <b>${locus.key}</b> :
-          ${gene}
-          <br>
-          ${isRec ? "🔵 " + locus.rec : "🟢 " + locus.dom}
-        </div>
-      `;
-
-    });
-
-    card.innerHTML = `
-      <h3>${bean.name}</h3>
-
-      <div class="emoji">
-        ${stage === 1 ? "🌱" : "🫘"}
-      </div>
-
-      <p>
-        열성 형질:
-        <b>${n} / ${loci.length}</b>
-        ${perfectText}
-      </p>
-
-      <div class="genes">
-        ${genesHTML}
-      </div>
-    `;
-
-    card.addEventListener(
-      "click",
-      () => selectBean(bean.id)
-    );
-
-    $("peas").appendChild(card);
-
-  });
-
-  $("selected").textContent =
-    selected.length + " / 2";
-
-  $("total").textContent =
-    total;
-
-  $("perfect").textContent =
-    perfect;
-
+ $("owned").textContent=peas.length;$("total").textContent=total;$("perfect").textContent=perfect;$("six").textContent=six;$("player").textContent=playerName||"-";
+ renderParents();renderCollection();renderCodex();cool();
 }
-
-
-/* =========================================================
-   부모 선택
-========================================================= */
-
-function selectBean(id){
-
-  if(selected.includes(id)){
-
-    selected =
-      selected.filter(x => x !== id);
-
-  }else{
-
-    if(selected.length >= 2){
-
-      selected.shift();
-
-    }
-
-    selected.push(id);
-
-  }
-
-  render();
-
+function renderParents(){
+ $("parents").innerHTML="";
+ for(let i=0;i<2;i++){let d=document.createElement("div");d.className="parent";
+  let p=selected[i]?peas.find(x=>x.id===selected[i]):null;
+  if(p){d.className+=" active";d.innerHTML="<b>"+(i+1)+"번 부모 ✓ 선택됨</b><br>"+p.name+"<br>"+p.genes.join(" ")}
+  else d.innerHTML="<b>"+(i+1)+"번 부모</b><br>선택되지 않음";
+  $("parents").appendChild(d)}
 }
-
-
-/* =========================================================
-   교배
-========================================================= */
+function renderCodex(){
+ $("codex").innerHTML=[...codex].map((k,i)=>"<div style='padding:8px;border-bottom:1px solid #eee'>#"+(i+1)+" "+k+"</div>").join("");
+}
+function renderCollection(){
+ $("collection").innerHTML="";
+ peas.slice().reverse().forEach(p=>{
+  let n=recCount(p.genes),r=rare(p.genes),c=document.createElement("div");c.className="card"+(selected.includes(p.id)?" selected":"")+(p.locked?" locked":"")+(n===7?" perfect":n===6?" six":"");
+  if(selected.includes(p.id)){let b=document.createElement("div");b.className="badge";b.textContent=selected[0]===p.id?"✓ 1번 부모":"✓ 2번 부모";c.appendChild(b)}
+  let s="<div class='name'>"+esc(p.name)+(p.fav?" ⭐":"")+(p.locked?" 🔒":"")+"</div>";
+  s+="<div class='rarity "+r[1]+"'>"+r[0]+"</div><div class='genes'>";
+  p.genes.forEach(g=>{let q=g[0]===g[1]&&g[0]===g[0].toLowerCase();s+="<span class='gene "+(q?"rec":"")+"'>"+(q?"◆ ":"")+g+"</span>"});
+  s+="</div><div><b>"+(n===7?"🔥 ":"🧬 ")+"열성 형질: "+n+"/7"+(n===7?" <span class='recText'>완전 열성!</span>":"")+"</b></div><div class='phen'>";
+  phen(p.genes).forEach((x,i)=>{let q=p.genes[i][0]===p.genes[i][1]&&p.genes[i][0]===p.genes[i][0].toLowerCase();s+="<div><b>"+loci[i].key+":</b> "+(q?"<span class='recText'>"+x+"</span>":x)+"</div>"});
+  s+="</div>";c.innerHTML+=s;
+  let a=document.createElement("button");a.textContent=selected.includes(p.id)?"✓ 부모 선택 해제":"🧬 부모 선택";a.onclick=()=>toggle(p.id);
+  let b=document.createElement("button");b.textContent=p.fav?"⭐ 즐겨찾기 해제":"⭐ 즐겨찾기";b.onclick=()=>{p.fav=!p.fav;render()};
+  let z=document.createElement("button");z.textContent=p.locked?"🔓 잠금 해제":"🔒 잠금";z.onclick=()=>{p.locked=!p.locked;if(p.locked)selected=selected.filter(x=>x!==p.id);render()};
+  c.append(a,b,z);$("collection").appendChild(c);
+ })
+}
+function toggle(id){let p=peas.find(x=>x.id===id);if(!p||p.locked)return;if(selected.includes(id))selected=selected.filter(x=>x!==id);else{if(selected.length===2)selected.shift();selected.push(id);log("🧬 "+p.name+" 선택")}render()}
+function cool(){let m=Math.max(0,cooldownUntil-Date.now());$("cooldown").textContent=m?(m/1000).toFixed(1)+"초":"가능";$("breed").disabled=!!m;if(m)setTimeout(cool,100)}
 
 function breed(){
-
-  if(Date.now() < cooldownUntil){
-    return;
-  }
-
-  if(selected.length !== 2){
-
-    log("⚠️ 부모 2마리를 선택해주세요.");
-
-    return;
-  }
-
-  /*
-    첫 번째 실제 교배에서
-    전체 스피드런 시작
-  */
-
-  if(!timerRunning && !timerFinished){
-    startTimer();
-  }
-
-  const list =
-    currentBeans();
-
-  const parentA =
-    list.find(x => x.id === selected[0]);
-
-  const parentB =
-    list.find(x => x.id === selected[1]);
-
-  if(!parentA || !parentB){
-    return;
-  }
-
-  const loci =
-    currentLoci();
-
-  const childGenes = [];
-
-  loci.forEach((_,index)=>{
-
-    const a =
-      parentA.genes[index];
-
-    const b =
-      parentB.genes[index];
-
-    const alleleA =
-      a[Math.floor(Math.random()*2)];
-
-    const alleleB =
-      b[Math.floor(Math.random()*2)];
-
-    const genes =
-      [alleleA,alleleB]
-      .sort((x,y)=>{
-
-        if(
-          x === x.toUpperCase() &&
-          y === y.toLowerCase()
-        ){
-          return -1;
-        }
-
-        if(
-          x === x.toLowerCase() &&
-          y === y.toUpperCase()
-        ){
-          return 1;
-        }
-
-        return 0;
-
-      });
-
-    childGenes.push(
-      genes.join("")
-    );
-
-  });
-
-  const child =
-    makeBean(
-      stage === 1
-        ? "🌱 완두콩 #" + idSeq
-        : "🫘 강낭콩 #" + idSeq,
-      childGenes
-    );
-
-  if(stage === 1){
-
-    peas.push(child);
-
-  }else{
-
-    beans.push(child);
-
-  }
-
-  total++;
-
-  selected = [];
-
-  cooldownUntil =
-    Date.now() + 500;
-
-  log(
-    "🧬 " +
-    child.name +
-    " 탄생! 열성 " +
-    recessiveCount(child) +
-    "/" +
-    loci.length
-  );
-
-  if(isPerfect(child)){
-
-    perfect++;
-
-    if(stage === 1){
-
-      completePeaStage(child);
-
-    }else{
-
-      completeBeanStage(child);
-
-    }
-
-  }
-
-  render();
-
+ if(cooldownUntil>Date.now())return;
+ if(selected.length!==2){log("⚠️ 부모 2마리를 선택해주세요.");return}
+ let a=peas.find(x=>x.id===selected[0]),b=peas.find(x=>x.id===selected[1]);
+ let gs=loci.map((_,i)=>[a.genes[i][Math.random()*2|0],b.genes[i][Math.random()*2|0]].sort((x,y)=>x===x.toUpperCase()?-1:y===y.toUpperCase()?1:0).join(""));
+ let p=makePea("🌱 교배 완두콩 #"+(peas.length-1),gs);peas.push(p);total++;cooldownUntil=Date.now()+1000;register(p);born(p);
+ let n=recCount(gs);
+ if(n===7){perfect++;log("🌟 전설 탄생! "+p.name);celebrate("🎉🌟 전설의 완두콩 탄생!","7개 형질 모두 완전 열성입니다!",p,true);submitScore(total)}
+ else if(n===6){six++;log("🌟 특별한 완두콩 탄생!");celebrate("🎉 특별한 완두콩!","7개 중 6개 형질이 열성입니다!",p,false)}
+ else log("🌱 새로운 완두콩! 열성 "+n+"/7");
+ render()
 }
-
-
-/* =========================================================
-   완두콩 스테이지 클리어
-========================================================= */
-
-function completePeaStage(bean){
-
-  log(
-    "🎉 전설의 완두콩 탄생! " +
-    bean.name
-  );
-
-  celebrate(
-    "🎉 전설의 완두콩 탄생!",
-    "7개 형질이 전부 열성입니다!",
-    "🌱"
-  );
-
-  $("nextStagePanel")
-    .classList.remove("hidden");
-
+function born(p){
+ let r=rare(p.genes),n=recCount(p.genes);
+ $("born").style.display="block";
+ $("bornContent").innerHTML="<h2>"+esc(p.name)+"</h2><div class='rarity "+r[1]+"'>"+r[0]+"</div><div class='genes'>"+p.genes.map(g=>{let q=g[0]===g[1]&&g[0]===g[0].toLowerCase();return"<span class='gene "+(q?"rec":"")+"'>"+(q?"◆ ":"")+g+"</span>"}).join("")+"</div><b>🧬 열성 형질 "+n+"/7</b><div class='phen'>"+phen(p.genes).map((x,i)=>loci[i].key+": "+x).join("<br>")+"</div>"
 }
+function celebrate(t,x,p,fw){$("ct").textContent=t;$("cx").textContent=x;$("cg").textContent="🧬 "+p.genes.join(" ");$("celebrate").style.display="grid";if(fw)startFW()}
+window.closeCelebrate=()=>{$("celebrate").style.display="none";stopFW()}
 
-
-/* =========================================================
-   강낭콩 스테이지 시작
-========================================================= */
-
-function startBeanStage(){
-
-  stage = 2;
-
-  selected = [];
-
-  beans = [
-    makeBean(
-      "🫘 시작 강낭콩 A",
-      beanStarter
-    ),
-    makeBean(
-      "🫘 시작 강낭콩 B",
-      beanStarter
-    )
-  ];
-
-  $("nextStagePanel")
-    .classList.add("hidden");
-
-  $("finalPanel")
-    .classList.add("hidden");
-
-  updateStageUI();
-
-  render();
-
-  log(
-    "🫘 STAGE 2 시작!"
-  );
-
-  log(
-    "🔥 이제 9개 형질을 모두 열성으로 만들어야 합니다!"
-  );
-
+async function submitScore(score){
+ if(!firebaseReady){setRank("Firebase 연결 전이라 기록을 저장할 수 없습니다.");return}
+ try{
+  let ref=doc(db,"peaRankings",user.uid),snap=await getDoc(ref),old=snap.exists()?snap.data():null;
+  if(!old||score<old.score){await setDoc(ref,{name:playerName,score,updatedAt:Date.now()});setRank("🎉 최고 기록 저장 완료!");}
+  await loadRanking()
+ }catch(e){console.error(e);setRank("랭킹 저장 실패. Firestore 규칙을 확인하세요.")}
 }
-
-
-/* =========================================================
-   강낭콩 스테이지 클리어
-========================================================= */
-
-function completeBeanStage(bean){
-
-  const finalTime =
-    stopTimer();
-
-  log(
-    "🏆 최종 전설 강낭콩 탄생!"
-  );
-
-  if(finalTime !== null){
-
-    log(
-      "⏱️ 최종 기록: " +
-      formatTime(finalTime)
-    );
-
-  }
-
-  celebrate(
-    "🏆 최종 스테이지 클리어!",
-    "강낭콩 9개 형질이 모두 열성입니다!<br><br>⏱️ " +
-    formatTime(finalTime),
-    "🫘"
-  );
-
-  $("finalTime").textContent =
-    formatTime(finalTime);
-
-  $("finalPanel")
-    .classList.remove("hidden");
-
+async function loadRanking(){
+ if(!firebaseReady)return;
+ try{
+  let q=query(collection(db,"peaRankings"),orderBy("score","asc"),limit(50)),snap=await getDocs(q),body=$("ranking");body.innerHTML="";
+  if(!snap.docs.length){body.innerHTML="<tr><td colspan='3'>아직 기록이 없습니다.</td></tr>";return}
+  snap.docs.forEach((d,i)=>{let x=d.data(),tr=document.createElement("tr");if(user&&d.id===user.uid)tr.className="me";let medal=i<3?["🥇","🥈","🥉"][i]:i+1;tr.innerHTML="<td>"+medal+"</td><td>"+esc(x.name||"이름 없음")+(user&&d.id===user.uid?" ⭐":"")+"</td><td>"+x.score+"회</td>";body.appendChild(tr)});
+  let mine=snap.docs.findIndex(d=>user&&d.id===user.uid);setRank(mine>=0?"현재 랭킹 "+(mine+1)+"위 · 최고 기록 "+snap.docs[mine].data().score+"회":"아직 7열성 성공 기록이 없습니다.")
+ }catch(e){console.error(e);setRank("랭킹을 불러오지 못했습니다.")}
 }
-
-
-/* =========================================================
-   축하창
-========================================================= */
-
-function celebrate(title,text,emoji){
-
-  $("celebrateTitle").textContent =
-    title;
-
-  $("celebrateText").innerHTML =
-    text;
-
-  $("celebrateEmoji").textContent =
-    emoji;
-
-  $("celebrate")
-    .classList.add("show");
-
-  fireworks();
-
-}
-
-
-$("closeCelebrate").addEventListener(
-  "click",
-  ()=>{
-    $("celebrate")
-      .classList.remove("show");
-  }
-);
-
-
-/* =========================================================
-   폭죽
-========================================================= */
-
-function fireworks(){
-
-  const symbols =
-    ["🎉","✨","🎊","⭐","🌟","💚"];
-
-  for(let i=0;i<25;i++){
-
-    const f =
-      document.createElement("div");
-
-    f.className =
-      "firework";
-
-    f.textContent =
-      symbols[
-        Math.floor(
-          Math.random()*symbols.length
-        )
-      ];
-
-    f.style.left =
-      Math.random()*100 + "%";
-
-    f.style.top =
-      (50 + Math.random()*35) + "%";
-
-    f.style.animationDelay =
-      Math.random()*0.5 + "s";
-
-    document.body.appendChild(f);
-
-    setTimeout(
-      ()=>f.remove(),
-      2200
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   로그
-========================================================= */
-
-function log(message){
-
-  const line =
-    document.createElement("div");
-
-  const time =
-    new Date().toLocaleTimeString();
-
-  line.textContent =
-    "[" + time + "] " + message;
-
-  $("log").prepend(line);
-
-}
-
-
-/* =========================================================
-   자동 교배
-========================================================= */
-
-function autoLoop(){
-
-  if(!auto) return;
-
-  const list =
-    currentBeans();
-
-  if(list.length >= 2){
-
-    /*
-      자동 교배에서는
-      가장 최근 2마리를 사용
-    */
-
-    selected = [
-      list[list.length-1].id,
-      list[list.length-2].id
-    ];
-
-    breed();
-
-  }
-
-  if(
-    auto &&
-    stage <= 2 &&
-    !timerFinished
-  ){
-
-    setTimeout(
-      autoLoop,
-      550
-    );
-
-  }
-
-}
-
-
-$("auto").addEventListener(
-  "click",
-  ()=>{
-
-    auto = !auto;
-
-    $("auto").textContent =
-      auto
-        ? "⏹️ 자동 교배 중"
-        : "▶️ 자동 교배";
-
-    if(auto){
-      autoLoop();
-    }
-
-  }
-);
-
-
-/* =========================================================
-   다음 스테이지 버튼
-========================================================= */
-
-$("nextStage").addEventListener(
-  "click",
-  ()=>{
-
-    auto = false;
-
-    $("auto").textContent =
-      "▶️ 자동 교배";
-
-    startBeanStage();
-
-    window.scrollTo({
-      top:0,
-      behavior:"smooth"
-    });
-
-  }
-);
-
-
-/* =========================================================
-   새 게임
-========================================================= */
-
-$("reset").addEventListener(
-  "click",
-  ()=>{
-
-    if(
-      confirm(
-        "새 게임을 시작할까요?\n\n현재 진행 상황은 초기화되지만 최고 기록은 유지됩니다."
-      )
-    ){
-
-      initGame();
-
-    }
-
-  }
-);
-
-
-$("restartFinal").addEventListener(
-  "click",
-  ()=>{
-
-    initGame();
-
-    window.scrollTo({
-      top:0,
-      behavior:"smooth"
-    });
-
-  }
-);
-
-
-/* =========================================================
-   시작
-========================================================= */
-
-initGame();
-
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+
+let canvas=$("fireworks"),ctx=canvas.getContext("2d"),run=false,parts=[];
+function size(){canvas.width=innerWidth;canvas.height=innerHeight}size();addEventListener("resize",size);
+function burst(){let x=Math.random()*canvas.width,y=Math.random()*canvas.height*.55+50;for(let i=0;i<55;i++){let a=Math.random()*Math.PI*2,v=Math.random()*5+2;parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:100})}}
+function frame(){if(!run)return;ctx.clearRect(0,0,canvas.width,canvas.height);if(Math.random()<.09)burst();parts=parts.filter(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.045;p.l--;ctx.globalAlpha=p.l/100;ctx.fillStyle="hsl("+Math.random()*360+",100%,65%)";ctx.beginPath();ctx.arc(p.x,p.y,2,0,7);ctx.fill();return p.l>0});ctx.globalAlpha=1;requestAnimationFrame(frame)}
+function startFW(){run=true;parts=[];for(let i=0;i<4;i++)setTimeout(burst,i*220);frame()}
+function stopFW(){run=false;parts=[];ctx.clearRect(0,0,canvas.width,canvas.height)}
+
+$("breed").onclick=breed;$("auto").onclick=()=>{auto=!auto;$("auto").textContent=auto?"⏹️ 자동 교배 중":"▶️ 자동 교배";if(auto)loop()};function loop(){if(!auto)return;breed();setTimeout(loop,1050)}
+$("refresh").onclick=loadRanking;
+$("reset").onclick=()=>{if(confirm("정말 초기화할까요?"))location.reload()};
+function startGame(){let n=$("nameInput").value.trim();if(!n)return alert("이름을 입력해주세요.");playerName=n.slice(0,12);localStorage.setItem("peaPlayerName",playerName);$("gate").style.display="none";render();loadRanking()}
+$("start").onclick=startGame;$("nameInput").onkeydown=e=>{if(e.key==="Enter")startGame()};
+$("change").onclick=()=>{$("nameInput").value=playerName;$("gate").style.display="grid"};
+
+if(playerName){$("gate").style.display="none"}log("🎮 게임 시작! 시작 완두콩 2마리가 준비되었습니다.");render();
 </script>
-
 </body>
 </html>
