@@ -502,7 +502,7 @@ button:disabled{
   <button id="reset">🔄 게임 초기화</button>
 
   <p>
-    ※ 테스트를 위해 교배 쿨타임은 <b>1초</b>입니다.
+    ※ 테스트를 위해 교배 쿨타임은 <b>0.05초</b>입니다.
   </p>
 
 </div>
@@ -1062,7 +1062,7 @@ function renderCollection(){
 
       const isRec=
         pea.genes[i][0]===
-pea.genes[i][1] &&
+        pea.genes[i][1] &&
         pea.genes[i][0]===
         pea.genes[i][0].toLowerCase();
 
@@ -1220,7 +1220,7 @@ function updateCooldown(){
 
   el.textContent=
     ms>0
-    ? (ms/1000).toFixed(1)+"초"
+    ? (ms/1000).toFixed(2)+"초"
     : "가능";
 
   document.getElementById("breed").disabled=
@@ -1230,7 +1230,7 @@ function updateCooldown(){
 
     setTimeout(
       updateCooldown,
-      100
+      10
     );
 
   }
@@ -1335,7 +1335,7 @@ function breedOnce(){
   total++;
 
   cooldownUntil=
-    Date.now()+1000;
+    Date.now()+50;
 
 
   register(pea);
@@ -1593,7 +1593,7 @@ function autoLoop(){
 
   setTimeout(
     autoLoop,
-    1050
+    100
   );
 
 }
